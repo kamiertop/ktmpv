@@ -19,15 +19,26 @@ ToolBar {
     id: root
 
     required property MpvVideo m_mpv
-    required property MenuBarLoader m_menuBarLoader
+    required property bool playlistVisible
+    readonly property alias m_menuBarLoader: menuBarLoader
 
-    property bool isSmallSize: width < 600
-    property int buttonSize: isSmallSize ? Kirigami.Units.iconSizes.small : Kirigami.Units.iconSizes.smallMedium
+    readonly property Main mainWindow: Window.window as Main
+
+    implicitHeight: 44
+    leftPadding: 8
+    rightPadding: 10
+    topPadding: 4
+    bottomPadding: 4
+    Kirigami.Theme.colorSet: Kirigami.Theme.Header
+    background: Rectangle {
+        color: Kirigami.Theme.backgroundColor
+    }
 
     position: ToolBar.Header
+    // Frameless windows always need their window controls outside fullscreen.
     state: {
         const mainWindow = Window.window as Main
-        if (!mainWindow.isFullScreen() && GeneralSettings.showHeader) {
+        if (!mainWindow.isFullScreen()) {
             return "visible"
         } else {
             return "hidden"
@@ -39,98 +50,155 @@ ToolBar {
         mainWindow.resizeWindow()
     }
 
-    RowLayout {
-        id: headerRow
+    MouseArea {
+        property point pressPosition
 
-        width: parent.width
+        anchors.fill: parent
+        acceptedButtons: Qt.LeftButton
+        onPressed: function(mouse) {
+            pressPosition = Qt.point(mouse.x, mouse.y)
+        }
+        onPositionChanged: function(mouse) {
+            if (pressed && Math.hypot(mouse.x - pressPosition.x, mouse.y - pressPosition.y)
+                    >= Qt.styleHints.startDragDistance) {
+                root.mainWindow.startSystemMove()
+            }
+        }
+        onDoubleClicked: root.mainWindow.toggleMaximized()
+    }
+
+    component WindowButton: AbstractButton {
+        id: control
+
+        required property string symbol
+        implicitWidth: 32
+        implicitHeight: 32
+        hoverEnabled: true
+        focusPolicy: Qt.TabFocus
+        Accessible.name: text
+
+        background: Rectangle {
+            radius: width / 2
+            color: Kirigami.Theme.textColor
+            opacity: control.down ? 0.22 : control.hovered || control.checked || control.visualFocus ? 0.15 : 0
+            Behavior on opacity { NumberAnimation { duration: 120 } }
+            border.width: control.visualFocus ? 2 : 0
+            border.color: Kirigami.Theme.highlightColor
+        }
+        contentItem: Item {
+            Rectangle {
+                anchors.centerIn: parent
+                width: 16
+                height: 13
+                radius: 2
+                color: "transparent"
+                border.width: 1.5
+                border.color: Kirigami.Theme.textColor
+                visible: control.symbol === "sidebar"
+
+                Rectangle {
+                    x: 5
+                    y: 1
+                    width: 1.5
+                    height: parent.height - 2
+                    color: Kirigami.Theme.textColor
+                }
+            }
+            // Draw symbolic controls independently of the installed icon theme.
+            Rectangle {
+                anchors.centerIn: parent
+                width: 12
+                height: 2
+                color: Kirigami.Theme.textColor
+                visible: control.symbol === "minimize" || control.symbol === "close"
+                rotation: control.symbol === "close" ? 45 : 0
+            }
+            Rectangle {
+                anchors.centerIn: parent
+                width: 12
+                height: 2
+                color: Kirigami.Theme.textColor
+                visible: control.symbol === "close"
+                rotation: -45
+            }
+            Rectangle {
+                anchors.centerIn: parent
+                anchors.horizontalCenterOffset: control.symbol === "restore" ? 2 : 0
+                anchors.verticalCenterOffset: control.symbol === "restore" ? -2 : 0
+                width: 10
+                height: 10
+                radius: 1
+                color: "transparent"
+                border.width: 1.5
+                border.color: Kirigami.Theme.textColor
+                visible: control.symbol === "maximize" || control.symbol === "restore"
+            }
+            Rectangle {
+                anchors.centerIn: parent
+                anchors.horizontalCenterOffset: -1
+                anchors.verticalCenterOffset: 1
+                width: 10
+                height: 10
+                radius: 1
+                color: Kirigami.Theme.backgroundColor
+                border.width: 1.5
+                border.color: Kirigami.Theme.textColor
+                visible: control.symbol === "restore"
+            }
+        }
+    }
+
+    RowLayout {
+        anchors.fill: parent
+        anchors.leftMargin: root.leftPadding
+        anchors.rightMargin: root.rightPadding
+        anchors.topMargin: root.topPadding
+        anchors.bottomMargin: root.bottomPadding
+        spacing: 6
+
+        WindowButton {
+            symbol: "sidebar"
+            text: HarunaApp.actions.togglePlaylistAction.text
+            checkable: true
+            checked: root.playlistVisible
+            onClicked: HarunaApp.actions.togglePlaylistAction.trigger()
+        }
 
         HamburgerMenu {
             m_mpv: root.m_mpv
-            m_menuBarLoader: root.m_menuBarLoader
-
+            m_menuBarLoader: menuBarLoader
             position: HamburgerMenu.Position.Header
-            visible: !root.m_menuBarLoader.visible || root.m_menuBarLoader.isShowAnimationRunning
-
-            icon.width: root.buttonSize
-            icon.height: root.buttonSize
+            visible: !menuBarLoader.visible || menuBarLoader.isShowAnimationRunning
         }
 
-        ToolButton {
-            action: HarunaApp.actions.openFileAction
-            focusPolicy: Qt.NoFocus
-            icon.width: root.buttonSize
-            icon.height: root.buttonSize
+        MenuBarLoader {
+            id: menuBarLoader
+
+            Layout.alignment: Qt.AlignVCenter
+            Layout.maximumWidth: Math.max(0, root.width - 188)
+            m_mpv: root.m_mpv
+            state: !root.mainWindow.isFullScreen() && GeneralSettings.showMenuBar
+                   ? "visible" : "hidden"
         }
 
-        ToolButton {
-            action: HarunaApp.actions.openUrlAction
-            focusPolicy: Qt.NoFocus
-            icon.width: root.buttonSize
-            icon.height: root.buttonSize
+        Item { Layout.fillWidth: true }
+
+        WindowButton {
+            symbol: "minimize"
+            text: KI18n.i18nc("@action:button", "Minimize")
+            onClicked: root.mainWindow.showMinimized()
         }
-
-        ToolSeparator {}
-
-        ToolButton {
-            id: subtitleMenuButton
-
-            text: KI18n.i18nc("@action:intoolbar", "Subtitles")
-            icon.name: "add-subtitle"
-            icon.width: root.buttonSize
-            icon.height: root.buttonSize
-            focusPolicy: Qt.NoFocus
-            enabled: root.m_mpv.subtitleTracksModel.rowCount > 1
-            opacity: enabled ? 1.0 : 0.6
-            display: root.isSmallSize ? AbstractButton.IconOnly : AbstractButton.TextBesideIcon
-
-            onReleased: {
-                subtitleMenu.visible = !subtitleMenu.visible
-            }
-
-            SubtitleTracksMenu {
-                id: subtitleMenu
-
-                m_mpv: root.m_mpv
-                isPrimarySubtitleMenu: true
-
-                y: parent.height
-            }
+        WindowButton {
+            symbol: root.mainWindow.isMaximized() ? "restore" : "maximize"
+            text: root.mainWindow.isMaximized()
+                  ? KI18n.i18nc("@action:button", "Restore")
+                  : KI18n.i18nc("@action:button", "Maximize")
+            onClicked: root.mainWindow.toggleMaximized()
         }
-
-        ToolButton {
-            text: KI18n.i18nc("@action:intoolbar", "Audio")
-            icon.name: "audio-volume-high"
-            icon.width: root.buttonSize
-            icon.height: root.buttonSize
-            focusPolicy: Qt.NoFocus
-            enabled: root.m_mpv.audioTracksModel.rowCount > 0
-            opacity: enabled ? 1.0 : 0.6
-            display: root.isSmallSize ? AbstractButton.IconOnly : AbstractButton.TextBesideIcon
-
-            onReleased: {
-                audioMenu.visible = !audioMenu.visible
-            }
-
-            AudioTracksMenu {
-                id: audioMenu
-
-                m_mpv: root.m_mpv
-
-                y: parent.height
-                model: root.m_mpv.audioTracksModel
-            }
-        }
-
-        Item {
-            Layout.fillWidth: true
-        }
-
-        ToolButton {
-            action: HarunaApp.actions.configureAction
-            focusPolicy: Qt.NoFocus
-            icon.width: root.buttonSize
-            icon.height: root.buttonSize
-            display: root.isSmallSize ? AbstractButton.IconOnly : AbstractButton.TextBesideIcon
+        WindowButton {
+            symbol: "close"
+            text: KI18n.i18nc("@action:button", "Close")
+            onClicked: root.mainWindow.close()
         }
     }
 

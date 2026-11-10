@@ -44,6 +44,15 @@ MpvPreview::MpvPreview()
         }
     });
     connect(this, &MpvPreview::fileChanged, this, &MpvPreview::loadFile);
+    connect(
+        mpvController(),
+        &MpvController::fileLoaded,
+        this,
+        [this]() {
+            m_fileLoaded = true;
+            seekToPosition();
+        },
+        Qt::QueuedConnection);
     connect(this, &MpvPreview::ready, this, [this]() {
         m_isReady = true;
         loadFile();
@@ -53,13 +62,14 @@ MpvPreview::MpvPreview()
 void MpvPreview::loadFile()
 {
     if (m_isReady && !m_file.isEmpty()) {
+        m_fileLoaded = false;
         command(QStringList() << u"loadfile"_s << m_file);
     }
 }
 
 double MpvPreview::position()
 {
-    return getProperty(MpvProperties::self()->Position).toDouble();
+    return m_position;
 }
 
 void MpvPreview::setPosition(double value)
@@ -67,7 +77,16 @@ void MpvPreview::setPosition(double value)
     if (qFuzzyCompare(m_position, value)) {
         return;
     }
-    setPropertyAsync(MpvProperties::self()->Position, value);
+    m_position = value;
+    seekToPosition();
+    Q_EMIT positionChanged();
+}
+
+void MpvPreview::seekToPosition()
+{
+    if (m_fileLoaded) {
+        commandAsync({u"seek"_s, QString::number(m_position, 'f', 3), m_accuratePreview ? u"absolute+exact"_s : u"absolute+keyframes"_s});
+    }
 }
 
 double MpvPreview::aspectRatio()
@@ -86,6 +105,7 @@ void MpvPreview::setFile(const QString &_file)
         return;
     }
     m_file = _file;
+    m_fileLoaded = false;
     Q_EMIT fileChanged();
 }
 

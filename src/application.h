@@ -9,6 +9,8 @@
 
 #include <QObject>
 #include <QQmlPropertyMap>
+#include <QQuickItem>
+#include <QQuickWindow>
 #include <QtQml/qqmlregistration.h>
 
 #include <KAboutData>
@@ -18,7 +20,6 @@ class QApplication;
 class QJSEngine;
 class QQmlApplicationEngine;
 class QQmlEngine;
-class QQuickWindow;
 class KActionCollection;
 class KConfigDialog;
 class KColorSchemeManager;
@@ -59,6 +60,7 @@ public:
     void setIsAltKeyPressed(bool newIsAltKeyPressed);
 
     Q_INVOKABLE void setupEventFilter(QObject *object);
+    Q_INVOKABLE QQuickItem *windowSurface(QQuickWindow *window) const;
     Q_INVOKABLE QList<QUrl> urls();
     Q_INVOKABLE QUrl url(uint index);
     Q_INVOKABLE void addUrl(const QString &value);
@@ -103,7 +105,7 @@ private:
     QString m_systemDefaultStyle;
     QQmlApplicationEngine *m_qmlEngine{nullptr};
     std::unique_ptr<ApplicationEventFilter> m_appEventFilter;
-    QQmlPropertyMap *m_actions{new QQmlPropertyMap};
+    QQmlPropertyMap *m_actions;
     bool m_actionsEnabled{true};
     bool m_isAltKeyPressed;
 };

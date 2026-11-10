@@ -40,22 +40,26 @@ Loader {
     }
 
     function openSettingPage(page: int) : void {
-        if (!root.active) {
-            root.active = true
-            root.loaded.connect(function() {
-                root.openSettingPage(page)
-            })
-            return
-        }
-
-        const settingsWindow = root.item as Kirigami.ApplicationWindow
         if (page !== SettingsWindow.Page.None) {
             root.activePage = page
         }
-        if (settingsWindow.visible) {
-            settingsWindow.raise()
-        } else {
-            settingsWindow.visible = true
+        if (!root.active) {
+            root.active = true
+            return
+        }
+        if (root.status !== Loader.Ready) {
+            return
+        }
+        const window = root.item as Kirigami.ApplicationWindow
+        window.showPage(root.activePage)
+        window.show()
+        window.raise()
+    }
+
+    onLoaded: openSettingPage(SettingsWindow.Page.None)
+    onActivePageChanged: {
+        if (root.status === Loader.Ready) {
+            root.item.showPage(root.activePage)
         }
     }
 
@@ -65,6 +69,45 @@ Loader {
         id: settingsWindow
 
         property string settingsPath: "qrc:/qt/qml/org/kde/haruna/settings"
+        property int loadedPage: SettingsWindow.Page.None
+        readonly property list<string> pageFiles: [
+            "GeneralPage.qml", "OsdPage.qml", "PlaybackPage.qml", "VideoPage.qml",
+            "AudioPage.qml", "SubtitlesPage.qml", "PlaylistPage.qml", "MousePage.qml",
+            "ShortcutsPage.qml", "CustomCommandsPage.qml", "DatabasePage.qml", "DebugPage.qml"
+        ]
+
+        function showPage(page: int): void {
+            if (page < 0 || page > SettingsWindow.Page.About
+                    || (page === loadedPage && pageStack.depth > 1)) {
+                return
+            }
+            const component = page === SettingsWindow.Page.About
+                              ? aboutPage : Qt.createComponent(`${settingsPath}/${pageFiles[page]}`)
+            if (component.status !== Component.Ready) {
+                console.warn(component.errorString())
+                return
+            }
+            const properties = page === SettingsWindow.Page.Video ? {m_mpv: root.m_mpv} : {}
+            // PageRow's URL factory parents new items to an internal QtObject.
+            // Create with a visual parent first, then pass the item to PageRow.
+            const item = component.createObject(pageStack, properties)
+            if (page !== SettingsWindow.Page.About) {
+                component.destroy()
+            }
+            if (!item) {
+                return
+            }
+            const previousPage = pageStack.get(1)
+            if (previousPage) {
+                pageStack.currentIndex = 1
+                pageStack.replace(item)
+                previousPage.destroy()
+            } else {
+                pageStack.push(item)
+            }
+            loadedPage = page
+        }
+
 
         width: 800
         height: 600
@@ -91,8 +134,6 @@ Loader {
                         icon.name: "configure"
                         onTriggered: {
                             root.activePage = SettingsWindow.Page.General
-                            settingsWindow.pageStack.removePage(1)
-                            settingsWindow.pageStack.push(`${settingsWindow.settingsPath}/GeneralPage.qml`)
                         }
                     },
                     Kirigami.Action {
@@ -100,8 +141,6 @@ Loader {
                         icon.name: "dialog-messages"
                         onTriggered: {
                             root.activePage = SettingsWindow.Page.Osd
-                            settingsWindow.pageStack.removePage(1)
-                            settingsWindow.pageStack.push(`${settingsWindow.settingsPath}/OsdPage.qml`)
                         }
                     },
                     Kirigami.Action {
@@ -109,8 +148,6 @@ Loader {
                         icon.name: "media-playback-start"
                         onTriggered: {
                             root.activePage = SettingsWindow.Page.Playback
-                            settingsWindow.pageStack.removePage(1)
-                            settingsWindow.pageStack.push(`${settingsWindow.settingsPath}/PlaybackPage.qml`)
                         }
                     },
                     Kirigami.Action {
@@ -118,9 +155,6 @@ Loader {
                         icon.name: "video-x-generic"
                         onTriggered: {
                             root.activePage = SettingsWindow.Page.Video
-                            settingsWindow.pageStack.removePage(1)
-                            settingsWindow.pageStack.push(`${settingsWindow.settingsPath}/VideoPage.qml`,
-                                                               {m_mpv: root.m_mpv})
                         }
                     },
                     Kirigami.Action {
@@ -128,8 +162,6 @@ Loader {
                         icon.name: "player-volume"
                         onTriggered: {
                             root.activePage = SettingsWindow.Page.Audio
-                            settingsWindow.pageStack.removePage(1)
-                            settingsWindow.pageStack.push(`${settingsWindow.settingsPath}/AudioPage.qml`)
                         }
                     },
                     Kirigami.Action {
@@ -137,8 +169,6 @@ Loader {
                         icon.name: "add-subtitle"
                         onTriggered: {
                             root.activePage = SettingsWindow.Page.Subtitles
-                            settingsWindow.pageStack.removePage(1)
-                            settingsWindow.pageStack.push(`${settingsWindow.settingsPath}/SubtitlesPage.qml`)
                         }
                     },
                     Kirigami.Action {
@@ -146,8 +176,6 @@ Loader {
                         icon.name: "view-media-playlist"
                         onTriggered: {
                             root.activePage = SettingsWindow.Page.Playlist
-                            settingsWindow.pageStack.removePage(1)
-                            settingsWindow.pageStack.push(`${settingsWindow.settingsPath}/PlaylistPage.qml`)
                         }
                     },
                     Kirigami.Action {
@@ -155,8 +183,6 @@ Loader {
                         icon.name: "input-mouse"
                         onTriggered: {
                             root.activePage = SettingsWindow.Page.Mouse
-                            settingsWindow.pageStack.removePage(1)
-                            settingsWindow.pageStack.push(`${settingsWindow.settingsPath}/MousePage.qml`)
                         }
                     },
                     Kirigami.Action {
@@ -164,8 +190,6 @@ Loader {
                         icon.name: "configure-shortcuts"
                         onTriggered: {
                             root.activePage = SettingsWindow.Page.Shortcuts
-                            settingsWindow.pageStack.removePage(1)
-                            settingsWindow.pageStack.push(`${settingsWindow.settingsPath}/ShortcutsPage.qml`,)
                         }
                     },
                     Kirigami.Action {
@@ -173,8 +197,6 @@ Loader {
                         icon.name: "configure"
                         onTriggered: {
                             root.activePage = SettingsWindow.Page.CustomCommands
-                            settingsWindow.pageStack.removePage(1)
-                            settingsWindow.pageStack.push(`${settingsWindow.settingsPath}/CustomCommandsPage.qml`)
                         }
                     },
                     Kirigami.Action {
@@ -182,8 +204,6 @@ Loader {
                         icon.name: "server-database"
                         onTriggered: {
                             root.activePage = SettingsWindow.Page.Database
-                            settingsWindow.pageStack.removePage(1)
-                            settingsWindow.pageStack.push(`${settingsWindow.settingsPath}/DatabasePage.qml`)
                         }
                     },
                     Kirigami.Action {
@@ -191,8 +211,6 @@ Loader {
                         icon.name: "help-about"
                         onTriggered: {
                             root.activePage = SettingsWindow.Page.Debug
-                            settingsWindow.pageStack.removePage(1)
-                            settingsWindow.pageStack.push(`${settingsWindow.settingsPath}/DebugPage.qml`)
                         }
                     },
                     Kirigami.Action {
@@ -200,8 +218,6 @@ Loader {
                         icon.name: "help-about"
                         onTriggered: {
                             root.activePage = SettingsWindow.Page.About
-                            settingsWindow.pageStack.removePage(1)
-                            settingsWindow.pageStack.push(aboutPage)
                         }
                     }
                 ]
@@ -220,8 +236,13 @@ Loader {
                 }
 
                 onCurrentIndexChanged: {
-                    settingsPagesList.pages[root.activePage].trigger()
+                    if (settingsWindow.loadedPage !== SettingsWindow.Page.None
+                            && currentIndex >= 0 && currentIndex < pages.length
+                            && currentIndex !== root.activePage) {
+                        root.activePage = currentIndex
+                    }
                 }
+
             }
 
             Component {
@@ -238,6 +259,7 @@ Loader {
         Component.onCompleted: {
             HarunaApp.setupEventFilter(settingsWindow)
             pageStack.columnView.columnWidth = Kirigami.Units.gridUnit * 15
+            showPage(root.activePage)
         }
 
         Shortcut {

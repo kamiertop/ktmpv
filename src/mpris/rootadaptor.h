@@ -25,7 +25,7 @@ public:
     Q_PROPERTY(bool CanQuit READ canQuit CONSTANT)
     bool canQuit() const;
 
-    Q_PROPERTY(bool Fullscreen READ fullscreen WRITE setFullscreen CONSTANT)
+    Q_PROPERTY(bool Fullscreen READ fullscreen WRITE setFullscreen)
     bool fullscreen() const;
     void setFullscreen(bool newFullscreen);
 

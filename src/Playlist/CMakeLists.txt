@@ -12,6 +12,7 @@ qt_add_qml_module(playlist
     IMPORT_PATH ${CMAKE_BINARY_DIR}
     QML_FILES
         Playlist.qml
+        PlaylistActionsMenu.qml
         PlaylistAdvancedSortWindow.qml
         PlaylistItem.qml
         PlaylistItemContextMenu.qml

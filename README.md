@@ -49,6 +49,13 @@ these are just some features that set Haruna apart from others players
 # Dependencies
 Dependencies will be printed by `cmake` when building.
 
+The settings pages also require the `org.kde.kquickcontrols` and
+`org.kde.kitemmodels` QML modules at runtime. On Fedora, install them with:
+
+```bash
+sudo dnf install kf6-kdeclarative kf6-kitemmodels
+```
+
 # Build
 
 ```bash

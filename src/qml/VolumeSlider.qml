@@ -1,64 +1,62 @@
 /*
  * SPDX-FileCopyrightText: 2023 George Florea Bănuș <georgefb899@gmail.com>
- *
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 import QtQuick
 import QtQuick.Controls
-import Qt5Compat.GraphicalEffects
-
-import org.kde.kirigami as Kirigami
+import QtQuick.Controls.Basic as Basic
 import org.kde.haruna
 import org.kde.haruna.settings
 
-Slider {
+Basic.Slider {
     id: root
 
     required property MpvItem m_mpv
-
     property alias label: volumeLabel
 
     from: 0
     to: root.m_mpv.volumeMax
     value: root.m_mpv.volume
-    implicitWidth: 100
-    implicitHeight: 25
+    implicitWidth: 80
+    implicitHeight: 30
     wheelEnabled: true
+    hoverEnabled: true
     stepSize: AudioSettings.volumeStep
-    leftPadding: 0
-    rightPadding: 0
+    leftPadding: 5
+    rightPadding: 5
+    onMoved: root.m_mpv.volume = Math.round(value)
 
-    handle: Item { visible: false }
     background: Rectangle {
-        color: Kirigami.Theme.alternateBackgroundColor
-        scale: root.mirrored ? -1 : 1
-
+        x: root.leftPadding
+        y: (root.height - height) / 2
+        width: root.availableWidth
+        height: 3
+        radius: height / 2
+        color: "#35ffffff"
         Rectangle {
+            x: root.mirrored ? parent.width - width : 0
             width: root.position * parent.width
             height: parent.height
-            color: Kirigami.Theme.highlightColor
+            radius: height / 2
+            color: "#e4e4e7"
         }
     }
-
-    onPressedChanged: {
-        root.m_mpv.volume = value.toFixed(0)
+    handle: Rectangle {
+        x: root.leftPadding + root.visualPosition * root.availableWidth - width / 2
+        y: (root.height - height) / 2
+        width: 10
+        height: 10
+        radius: 5
+        color: "#ffffff"
+        visible: root.hovered || root.pressed || root.visualFocus
     }
-
-    onValueChanged: {
-        if (!root.m_mpv.isReady) {
-            return
-        }
-
-        root.m_mpv.volume = value.toFixed(0)
-    }
-
     Label {
         id: volumeLabel
-        text: root.value
-        anchors.centerIn: root
-        color: "#fff"
-        layer.enabled: true
-        layer.effect: DropShadow { verticalOffset: 1; color: "#111"; radius: 5; spread: 0.3; samples: 17 }
+        visible: false
+        text: Math.round(root.value)
     }
+    ToolTip.visible: hovered || pressed
+    ToolTip.text: Math.round(value) + "%"
+    ToolTip.delay: 500
 }

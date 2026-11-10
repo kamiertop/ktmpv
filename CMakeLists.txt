@@ -8,6 +8,9 @@ cmake_minimum_required(VERSION 3.16...3.30)
 
 project(haruna VERSION 1.9.0 LANGUAGES CXX)
 
+option(HARUNA_INSTALL_GIT_HOOKS "Install the formatting Git pre-commit hook" OFF)
+option(HARUNA_ENABLE_QML_DEBUGGING "Enable the QML debugger in Debug builds" OFF)
+
 set(QT_QML_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/src)
 set(QML_IMPORT_PATH ${QT_QML_OUTPUT_DIRECTORY} CACHE PATH "Extra QML import paths")
 
@@ -40,8 +43,10 @@ if(ECM_FOUND)
     file(GLOB_RECURSE ALL_CLANG_FORMAT_SOURCE_FILES *.cpp *.h *.hpp *.c)
     kde_clang_format(${ALL_CLANG_FORMAT_SOURCE_FILES})
 
-    include(KDEGitCommitHooks)
-    kde_configure_git_pre_commit_hook(CHECKS CLANG_FORMAT)
+    if(HARUNA_INSTALL_GIT_HOOKS)
+        include(KDEGitCommitHooks)
+        kde_configure_git_pre_commit_hook(CHECKS CLANG_FORMAT)
+    endif()
 
     include(ECMSetupVersion)
     ecm_setup_version(${PROJECT_VERSION}
@@ -138,6 +143,14 @@ set_package_properties(KF6WindowSystem PROPERTIES TYPE REQUIRED
 find_package(KF6Crash ${KF6_MIN_VERSION})
 set_package_properties(KF6Crash PROPERTIES TYPE REQUIRED
     URL "https://api.kde.org/frameworks/kcrash/html/index.html")
+
+# These imports are used by settings pages loaded only at runtime, so linking
+# the main window alone does not detect a missing installation.
+include(ECMFindQmlModule)
+ecm_find_qmlmodule(org.kde.kquickcontrols REQUIRED)
+set_package_properties(org.kde.kquickcontrols-QMLModule PROPERTIES
+    PURPOSE "Shortcut editors in settings (Fedora package: kf6-kdeclarative)")
+ecm_find_qmlmodule(org.kde.kitemmodels REQUIRED)
 
 find_package(KDSingleApplication-qt6)
 set_package_properties(KDSingleApplication-qt6 PROPERTIES TYPE REQUIRED

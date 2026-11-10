@@ -6,6 +6,7 @@
 
 #include <QApplication>
 #include <QCommandLineParser>
+#include <QDir>
 #include <QIcon>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
@@ -43,13 +44,21 @@ int main(int argc, char *argv[])
     QApplication::setOrganizationDomain(u"kde.org"_s);
     QApplication::setApplicationDisplayName(u"Haruna - Media Player"_s);
     QApplication::setApplicationVersion(Application::version());
+    // Set the portal identity before the platform plugin starts using D-Bus.
+    QGuiApplication::setDesktopFileName(u"org.kde.haruna"_s);
 
     // required by mpv
     QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGL);
+    QQuickWindow::setDefaultAlphaBuffer(true);
 
     QIcon::setFallbackThemeName(u"breeze"_s);
 
     QApplication qApplication(argc, argv);
+    // Use the freshly compiled catalogs when running directly from build/bin.
+    const auto localCatalogs = QDir(QCoreApplication::applicationDirPath()).absoluteFilePath(u"../locale"_s);
+    if (QDir(localCatalogs).exists()) {
+        KLocalizedString::addDomainLocaleDir("haruna", localCatalogs);
+    }
     QApplication::setWindowIcon(QIcon::fromTheme(u"haruna"_s));
 
     bool handledByQPT = INITIAL_STYLE != QQuickStyle::name();
@@ -96,6 +105,10 @@ int main(int argc, char *argv[])
 
     engine.addImageProvider(u"thumbnail"_s, new ThumbnailImageProvider());
     engine.loadFromModule("org.kde.haruna", "Main");
+
+    if (engine.rootObjects().isEmpty()) {
+        return EXIT_FAILURE;
+    }
 
     application->setQmlEngine(&engine);
 

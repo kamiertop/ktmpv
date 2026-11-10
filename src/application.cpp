@@ -77,6 +77,12 @@ bool ApplicationEventFilter::eventFilter(QObject *obj, QEvent *event)
     return QObject::eventFilter(obj, event);
 }
 
+QQuickItem *Application::windowSurface(QQuickWindow *window) const
+{
+    // Unlike ApplicationWindow.contentItem, this includes the header and menus.
+    return window ? window->contentItem() : nullptr;
+}
+
 Application *Application::instance()
 {
     static Application app;
@@ -94,6 +100,11 @@ Application::Application()
     , m_schemes(KColorSchemeManager::instance())
     , m_systemDefaultStyle(QApplication::style()->objectName())
     , m_appEventFilter{std::make_unique<ApplicationEventFilter>()}
+#if QT_VERSION >= QT_VERSION_CHECK(6, 11, 0)
+    , m_actions(QQmlPropertyMap::create(this))
+#else
+    , m_actions(new QQmlPropertyMap(this))
+#endif
 {
     if (GeneralSettings::guiStyle() != u"System"_s) {
         QApplication::setStyle(GeneralSettings::guiStyle());

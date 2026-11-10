@@ -1,6 +1,5 @@
 /*
  * SPDX-FileCopyrightText: 2024 George Florea Bănuș <georgefb899@gmail.com>
- *
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -8,17 +7,15 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Controls.Basic as Basic
 import QtQuick.Layouts
-
 import org.kde.ki18n
-
-import org.kde.kirigami as Kirigami
 import org.kde.haruna
 import org.kde.haruna.playlist
-import org.kde.haruna.settings
 
 Item {
     id: root
+    objectName: "PlaybackControls"
 
     required property MpvVideo m_mpv
     required property PlaylistsManager playlistsManager
@@ -26,367 +23,206 @@ Item {
     required property Header m_header
 
     property alias progressBar: progressBar
-    property string footerState: isFloating ? "hidden" : "visible"
-    property bool isFloating: GeneralSettings.footerStyle === "floating"
-    property bool isSmallSize: width < 600
-    property int buttonSize: isSmallSize ? Kirigami.Units.iconSizes.small : Kirigami.Units.iconSizes.smallMedium
+    readonly property bool isFloating: true
+    readonly property Main mainWindow: Window.window as Main
+    readonly property bool hasPlayback: m_mpv.playbackState === MpvItem.PlaybackState.Playing
+                                        || m_mpv.playbackState === MpvItem.PlaybackState.Paused
+    readonly property bool controlsVisible: footerHover.hovered || progressBar.interacting
+                                             || volumeSlider.pressed || hamburgerMenu.isOpen
 
-    implicitWidth: Window.window.contentItem.width
-    implicitHeight: root.isFloating
-                    ? footer.height + Kirigami.Units.largeSpacing * (root.isSmallSize ? 1 : 2)
-                    : footer.height
+    visible: hasPlayback && width >= 240
+    implicitHeight: 64
 
-    ToolBar {
-        id: footer
+    // Keep this hover target present even while the controls themselves are hidden.
+    HoverHandler { id: footerHover }
 
-        x: (root.width - width) / 2
-        width: root.isFloating
-               ? Math.min(Window.window.contentItem.width - Kirigami.Units.largeSpacing * (root.isSmallSize ? 2 : 4), 900)
-               : root.width
-
-        state: root.footerState
-        padding: Kirigami.Units.smallSpacing
-        position: ToolBar.Footer
-        hoverEnabled: true
-        background: Rectangle {
-            color: Qt.alpha(Kirigami.Theme.backgroundColor, root.isFloating ? 0.8 : 1.0)
-            radius: root.isFloating ? Kirigami.Units.cornerRadius : 0
-        }
-
-        Connections {
-            target: HarunaApp
-            function onQmlApplicationMouseLeave() {
-                if (root.isFloating) {
-                    hideFooterTimer.start()
-                }
-            }
-        }
-
-        Connections {
-            target: root.m_mpv
-            function onMousePositionChanged(x, y) {
-                Qt.callLater(footer.setState)
-            }
-        }
-
-        Timer {
-            interval: 50
-            running: !root.isFloating
-            repeat: true
-            onTriggered: {
-                Qt.callLater(footer.staticState)
-            }
-        }
-
-        Timer {
-            id: hideFooterTimer
-
-            running: false
-            repeat: false
-            interval: 1000
-            onTriggered: {
-                if (footer.hovered || hamburgerMenu.isOpen || progressBar.chaptersPopupIsOpen) {
-                    return
-                }
-
-                root.footerState = "hidden"
-            }
-        }
-
-        Component {
-            id: togglePlaylistButton
-
-            ToolButton {
-                action: HarunaApp.actions.togglePlaylistAction
-                icon.width: root.buttonSize
-                icon.height: root.buttonSize
-                display: root.isSmallSize ? AbstractButton.IconOnly : AbstractButton.TextBesideIcon
-            }
-        }
-
-        ColumnLayout {
-            spacing: 0
-            anchors.fill: parent
-
-            RowLayout {
-                id: footerRow
-
-                spacing: root.isSmallSize ? 1 : Kirigami.Units.smallSpacing
-
-                HamburgerMenu {
-                    id: hamburgerMenu
-
-                    m_mpv: root.m_mpv
-                    m_menuBarLoader: root.m_menuBarLoader
-
-                    position: HamburgerMenu.Position.Footer
-                    visible: root.m_menuBarLoader.state === "hidden" && !root.m_header.visible
-                    icon.width: root.buttonSize
-                    icon.height: root.buttonSize
-                }
-
-                Loader {
-                    sourceComponent: togglePlaylistButton
-                    active: !PlaylistSettings.canToggleWithMouse && PlaylistSettings.position === "left"
-                    visible: active
-                    asynchronous: false
-                }
-
-                ToolButton {
-                    id: playPauseButton
-
-                    display: AbstractButton.IconOnly
-                    icon.name: root.m_mpv.pause ? "media-playback-start" : "media-playback-pause"
-                    icon.width: root.buttonSize
-                    icon.height: root.buttonSize
-                    focusPolicy: Qt.NoFocus
-                    enabled: root.m_mpv.duration !== 0
-
-                    onClicked: HarunaApp.actions.playPauseAction.trigger()
-
-                    ToolTip {
-                        id: playPauseButtonToolTip
-
-                        text: root.m_mpv.pause ? KI18n.i18nc("@info:tooltip", "Start playback") : KI18n.i18nc("@info:tooltip", "Pause playback")
-                        delay: HarunaApp.isAltKeyPressed ? 0 : Kirigami.Units.toolTipDelay
-                        visible: playPauseButton.hovered
-                                 && (GeneralSettings.showExplanatoryToolTips || HarunaApp.isAltKeyPressed)
-                    }
-                }
-
-                ToolButton {
-                    id: playPreviousFile
-
-                    icon.name: footer.LayoutMirroring.enabled ? "media-skip-forward" : "media-skip-backward"
-                    icon.width: root.buttonSize
-                    icon.height: root.buttonSize
-                    display: AbstractButton.IconOnly
-                    focusPolicy: Qt.NoFocus
-                    enabled: root.playlistsManager.activePlaylist.itemCount > 1
-
-                    onClicked: HarunaApp.actions.playPreviousAction.trigger()
-
-                    ToolTip {
-                        text: KI18n.i18nc("@info:tooltip", "Play previous file")
-                        delay: HarunaApp.isAltKeyPressed ? 0 : Kirigami.Units.toolTipDelay
-                        visible: playPreviousFile.hovered
-                                 && (GeneralSettings.showExplanatoryToolTips || HarunaApp.isAltKeyPressed)
-                    }
-                }
-
-                ToolButton {
-                    id: playNextFile
-
-                    icon.name: footer.LayoutMirroring.enabled ? "media-skip-backward" : "media-skip-forward"
-                    icon.width: root.buttonSize
-                    icon.height: root.buttonSize
-                    display: AbstractButton.IconOnly
-                    focusPolicy: Qt.NoFocus
-                    enabled: root.playlistsManager.activePlaylist.itemCount > 1
-
-                    onClicked: HarunaApp.actions.playNextAction.trigger()
-
-                    ToolTip {
-                        text: KI18n.i18nc("@info:tooltip", "Play next file")
-                        delay: HarunaApp.isAltKeyPressed ? 0 : Kirigami.Units.toolTipDelay
-                        visible: playNextFile.hovered
-                                 && (GeneralSettings.showExplanatoryToolTips || HarunaApp.isAltKeyPressed)
-                    }
-                }
-
-                ToolButton {
-                    id: chaptersMenuButton
-
-                    icon.name: "overflow-menu"
-                    focusPolicy: Qt.NoFocus
-                    visible: !progressBar.showChapterMarkers && root.m_mpv.chaptersModel.rowCount > 0
-
-                    onClicked: {
-                        progressBar.openChapterPopup(this)
-                    }
-
-                    ToolTip {
-                        text: KI18n.i18nc("@info:tooltip", "Open chapters menu")
-                        delay: HarunaApp.isAltKeyPressed ? 0 : Kirigami.Units.toolTipDelay
-                        visible: chaptersMenuButton.hovered
-                                 && (GeneralSettings.showExplanatoryToolTips || HarunaApp.isAltKeyPressed)
-                    }
-                }
-
-                HProgressBar {
-                    id: progressBar
-
-                    m_mpv: root.m_mpv
-
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: 20
-                }
-
-                ToolButton {
-                    id: mute
-
-                    action: HarunaApp.actions.muteAction
-                    icon.name: root.m_mpv.mute || root.m_mpv.volume === 0 ? "player-volume-muted" : "player-volume"
-                    icon.width: root.buttonSize
-                    icon.height: root.buttonSize
-                    display: AbstractButton.IconOnly
-                    focusPolicy: Qt.NoFocus
-
-                    ToolTip {
-                        text: HarunaApp.actions.muteAction.text
-                        delay: HarunaApp.isAltKeyPressed ? 0 : Kirigami.Units.toolTipDelay
-                        visible: mute.hovered
-                                 && (GeneralSettings.showExplanatoryToolTips || HarunaApp.isAltKeyPressed)
-                    }
-                }
-
-
-                VolumeSlider {
-                    id: volumeSlider
-
-                    m_mpv: root.m_mpv
-                    label.font.pointSize: root.isSmallSize ? 8 : 10
-
-                    Layout.preferredWidth: root.isSmallSize ? 60 : 100
-                    Layout.preferredHeight: 20
-                }
-
-                Loader {
-                    sourceComponent: togglePlaylistButton
-                    active: !PlaylistSettings.canToggleWithMouse && PlaylistSettings.position === "right"
-                    visible: active
-                    asynchronous: false
-                }
-            }
-
-            RowLayout {
-                LabelWithTooltip {
-                    id: mediaTitleLabel
-
-                    text: root.m_mpv.mediaTitle
-                    font.pointSize: 9
-                    toolTipText: root.m_mpv.mediaTitle
-                    elide: Text.ElideRight
-
-                    Layout.fillWidth: true
-                }
-
-                LabelWithTooltip {
-                    id: timeInfo
-
-                    text: "%1 / %2".arg(root.m_mpv.formattedPosition).arg(root.m_mpv.formattedDuration)
-                    font.pointSize: 9
-                    toolTipText: KI18n.i18nc("@info:tooltip", "Remaining: %1", root.m_mpv.formattedRemaining)
-                    alwaysShowToolTip: true
-                    horizontalAlignment: Qt.AlignHCenter
-
-                    Layout.minimumWidth: textMetrics.width
-
-                    TextMetrics {
-                        id: textMetrics
-
-                        font: timeInfo.font
-                        text: "000:00:00 / 000:00:00"
-                    }
-                }
-            }
-        }
-
-        function setState() : void {
-            if (root.isFloating) {
-                floatingState()
-            } else {
-                staticState()
-            }
-        }
-
-        function floatingState() {
-            if (GeneralSettings.floatingFooterTrigger === "EveryMouseMovement") {
-                hideFooterTimer.stop()
-                root.footerState = "visible"
-                if (root.m_mpv.mouseY < root.m_mpv.height - footer.height * 2) {
-                    hideFooterTimer.restart()
-                }
-            } else {
-                if (root.m_mpv.mouseY > root.m_mpv.height - footer.height * 2) {
-                    const mainWindow = root.Window.window as Main
-                    if (mainWindow.containsMouse) {
-                        hideFooterTimer.stop()
-                        root.footerState = "visible"
-                    }
+    component PlayerIcon: Canvas {
+        required property string symbol
+        width: 24
+        height: 24
+        onSymbolChanged: requestPaint()
+        onPaint: {
+            const ctx = getContext("2d")
+            ctx.clearRect(0, 0, width, height)
+            ctx.strokeStyle = "#ffffff"
+            ctx.fillStyle = "#ffffff"
+            ctx.lineWidth = 1.7
+            ctx.lineJoin = "round"
+            ctx.lineCap = "round"
+            ctx.shadowColor = "#a0000000"
+            ctx.shadowBlur = 3
+            ctx.shadowOffsetY = 1
+            ctx.beginPath()
+            if (symbol === "play") {
+                ctx.moveTo(7, 4); ctx.lineTo(20, 12); ctx.lineTo(7, 20); ctx.closePath()
+            } else if (symbol === "pause") {
+                ctx.rect(6, 5, 3, 14); ctx.rect(15, 5, 3, 14)
+            } else if (symbol === "previous") {
+                ctx.moveTo(18, 5); ctx.lineTo(8, 12); ctx.lineTo(18, 19); ctx.closePath()
+                ctx.moveTo(5, 5); ctx.lineTo(5, 19)
+            } else if (symbol === "next") {
+                ctx.moveTo(6, 5); ctx.lineTo(16, 12); ctx.lineTo(6, 19); ctx.closePath()
+                ctx.moveTo(19, 5); ctx.lineTo(19, 19)
+            } else if (symbol === "volume" || symbol === "muted") {
+                ctx.moveTo(3, 9); ctx.lineTo(7, 9); ctx.lineTo(12, 5)
+                ctx.lineTo(12, 19); ctx.lineTo(7, 15); ctx.lineTo(3, 15); ctx.closePath()
+                if (symbol === "muted") {
+                    ctx.moveTo(16, 9); ctx.lineTo(22, 15)
+                    ctx.moveTo(22, 9); ctx.lineTo(16, 15)
                 } else {
-                    hideFooterTimer.start()
+                    ctx.moveTo(16, 8); ctx.quadraticCurveTo(20, 12, 16, 16)
+                    ctx.moveTo(19, 5); ctx.quadraticCurveTo(25, 12, 19, 19)
+                }
+            } else if (symbol === "maximize") {
+                ctx.rect(5, 5, 14, 14)
+            } else if (symbol === "restore") {
+                ctx.rect(4, 8, 12, 12)
+                ctx.moveTo(8, 5); ctx.lineTo(8, 4); ctx.lineTo(20, 4)
+                ctx.lineTo(20, 16); ctx.lineTo(19, 16)
+            } else if (symbol === "fullscreen" || symbol === "leaveFullscreen") {
+                const outer = symbol === "fullscreen"
+                const a = outer ? 3 : 8
+                const b = outer ? 21 : 16
+                const c = outer ? 8 : 3
+                const d = outer ? 16 : 21
+                ctx.moveTo(c, a); ctx.lineTo(a, a); ctx.lineTo(a, c)
+                ctx.moveTo(d, a); ctx.lineTo(b, a); ctx.lineTo(b, c)
+                ctx.moveTo(c, b); ctx.lineTo(a, b); ctx.lineTo(a, d)
+                ctx.moveTo(d, b); ctx.lineTo(b, b); ctx.lineTo(b, d)
+            } else if (symbol === "chapters") {
+                ctx.rect(3, 3, 18, 18)
+                for (let y = 7; y <= 17; y += 5) {
+                    ctx.moveTo(7, y); ctx.lineTo(7.5, y)
+                    ctx.moveTo(11, y); ctx.lineTo(17, y)
+                }
+            } else if (symbol === "menu") {
+                for (let y = 6; y <= 18; y += 6) {
+                    ctx.moveTo(3, y); ctx.lineTo(21, y)
                 }
             }
+            ctx.stroke()
+        }
+    }
+
+    component ControlButton: Basic.ToolButton {
+        id: control
+        required property string symbol
+        implicitWidth: 32
+        implicitHeight: 36
+        display: AbstractButton.IconOnly
+        hoverEnabled: true
+        opacity: enabled ? 1 : 0.35
+        Accessible.name: text
+        contentItem: Item {
+            PlayerIcon { anchors.centerIn: parent; symbol: control.symbol }
+        }
+        background: Rectangle {
+            radius: 4
+            color: control.down ? "#25ffffff" : control.hovered || control.visualFocus ? "#12ffffff" : "transparent"
+        }
+    }
+
+    Item {
+        id: panel
+        anchors.fill: parent
+        opacity: root.controlsVisible ? 1 : 0
+        visible: opacity > 0
+        enabled: root.controlsVisible
+        Behavior on opacity { NumberAnimation { duration: 120 } }
+
+        MouseArea {
+            anchors.fill: parent
+            acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
+            onWheel: wheel => wheel.accepted = true
         }
 
-        function staticState() {
-            const mainWindow = Window.window as Main
-            if (!mainWindow.isFullScreen() || (root.m_mpv.mouseY > root.m_mpv.height - footer.height * 2 && mainWindow.containsMouse)) {
-                root.footerState = "visible"
-            } else {
-                root.footerState = "hidden"
+        RowLayout {
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
+            anchors.leftMargin: root.width < 600 ? 10 : 20
+            anchors.rightMargin: root.width < 600 ? 10 : 20
+            anchors.bottomMargin: 10
+            height: 36
+            spacing: root.width < 600 ? 4 : 8
+
+            HamburgerMenu {
+                id: hamburgerMenu
+                m_mpv: root.m_mpv
+                m_menuBarLoader: root.m_menuBarLoader
+                position: HamburgerMenu.Position.Footer
+                visible: !root.m_header.visible
+                implicitWidth: 32
+                implicitHeight: 36
+                contentItem: Item {
+                    PlayerIcon { anchors.centerIn: parent; symbol: "menu" }
+                }
+                background: Rectangle { radius: 4; color: hamburgerMenu.hovered ? "#12ffffff" : "transparent" }
+            }
+            ControlButton {
+                symbol: "previous"
+                action: HarunaApp.actions.playPreviousAction
+                enabled: root.playlistsManager.activePlaylist.itemCount > 1
+                visible: root.width >= 600
+            }
+            ControlButton {
+                symbol: root.m_mpv.pause ? "play" : "pause"
+                action: HarunaApp.actions.playPauseAction
+            }
+            ControlButton {
+                symbol: "next"
+                action: HarunaApp.actions.playNextAction
+                enabled: root.playlistsManager.activePlaylist.itemCount > 1
+                visible: root.width >= 600
+            }
+            HProgressBar {
+                id: progressBar
+                m_mpv: root.m_mpv
+                Layout.fillWidth: true
+                Layout.minimumWidth: 24
+                Layout.preferredHeight: 28
+                Layout.leftMargin: 6
+                Layout.rightMargin: 6
+            }
+            Label {
+                text: root.width >= 720
+                      ? "%1 / %2".arg(root.m_mpv.formattedPosition).arg(root.m_mpv.formattedDuration)
+                      : root.m_mpv.formattedPosition
+                color: "#ffffff"
+                font.pixelSize: 12
+                style: Text.Outline
+                styleColor: "#80000000"
+                visible: root.width >= 360
+            }
+            ControlButton {
+                symbol: "chapters"
+                text: KI18n.i18nc("@info:tooltip", "Open chapters menu")
+                visible: root.m_mpv.chaptersModel.rowCount > 0 && root.width >= 800
+                onClicked: progressBar.openChapterPopup(this)
+            }
+            ControlButton {
+                symbol: root.m_mpv.mute || root.m_mpv.volume === 0 ? "muted" : "volume"
+                action: HarunaApp.actions.muteAction
+                visible: root.width >= 360
+            }
+            VolumeSlider {
+                id: volumeSlider
+                m_mpv: root.m_mpv
+                visible: root.width >= 900
+                Layout.preferredWidth: 64
+                Layout.preferredHeight: 30
+            }
+            ControlButton {
+                symbol: root.mainWindow.isMaximized() ? "restore" : "maximize"
+                text: root.mainWindow.isMaximized()
+                      ? KI18n.i18nc("@action:button", "Restore") : KI18n.i18nc("@action:button", "Maximize")
+                visible: !root.mainWindow.isFullScreen()
+                onClicked: root.mainWindow.toggleMaximized()
+            }
+            ControlButton {
+                symbol: root.mainWindow.isFullScreen() ? "leaveFullscreen" : "fullscreen"
+                action: HarunaApp.actions.toggleFullscreenAction
             }
         }
-
-        states: [
-            State {
-                name: "hidden"
-                PropertyChanges {
-                    footer.y: root.height
-                    footer.visible: false
-                }
-            },
-            State {
-                name : "visible"
-                PropertyChanges {
-                    footer.y: 0
-                    footer.visible: true
-                }
-            }
-        ]
-
-        transitions: [
-            Transition {
-                from: "visible"
-                to: "hidden"
-
-                SequentialAnimation {
-                    ParallelAnimation {
-                        NumberAnimation {
-                            target: footer
-                            property: "y"
-                            duration: Kirigami.Units.shortDuration
-                            easing.type: Easing.Linear
-                        }
-                    }
-                    PropertyAction {
-                        target: footer
-                        property: "visible"
-                        value: false
-                    }
-                }
-            },
-            Transition {
-                from: "hidden"
-                to: "visible"
-
-                SequentialAnimation {
-                    PropertyAction {
-                        target: footer
-                        property: "visible"
-                        value: true
-                    }
-                    ParallelAnimation {
-                        NumberAnimation {
-                            target: footer
-                            property: "y"
-                            duration: Kirigami.Units.shortDuration
-                            easing.type: Easing.Linear
-                        }
-                    }
-                }
-            }
-        ]
     }
 }

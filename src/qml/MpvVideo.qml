@@ -63,6 +63,12 @@ MpvItem {
         onTriggered: mouseArea.hideCursor = true
     }
 
+    Rectangle {
+        anchors.fill: parent
+        visible: root.playbackState === MpvItem.PlaybackState.Stopped
+        color: "#101012"
+    }
+
     MouseArea {
         id: mouseArea
 
@@ -329,14 +335,96 @@ MpvItem {
         }
     }
 
+    ColumnLayout {
+        anchors.centerIn: parent
+        width: Math.min(360, Math.max(0, root.width - 48))
+        spacing: 16
+        visible: root.playbackState === MpvItem.PlaybackState.Stopped && !dropArea.containsDrag
+
+        Item {
+            Layout.alignment: Qt.AlignHCenter
+            Layout.preferredWidth: 56
+            Layout.preferredHeight: 56
+            visible: root.height >= 280
+            Rectangle {
+                anchors.centerIn: parent
+                width: 48
+                height: 36
+                radius: 8
+                color: "transparent"
+                border.width: 2
+                border.color: "#71717a"
+            }
+            Canvas {
+                anchors.centerIn: parent
+                width: 14
+                height: 16
+                onPaint: {
+                    const ctx = getContext("2d")
+                    ctx.clearRect(0, 0, width, height)
+                    ctx.fillStyle = "#a1a1aa"
+                    ctx.beginPath()
+                    ctx.moveTo(2, 1)
+                    ctx.lineTo(13, 8)
+                    ctx.lineTo(2, 15)
+                    ctx.closePath()
+                    ctx.fill()
+                }
+            }
+        }
+
+        Label {
+            text: KI18n.i18nc("@info:placeholder", "Drop a video here")
+            color: "#f4f4f5"
+            font.pointSize: 18
+            font.bold: true
+            horizontalAlignment: Text.AlignHCenter
+            wrapMode: Text.WordWrap
+            Layout.fillWidth: true
+        }
+
+        Label {
+            text: KI18n.i18nc("@info:placeholder", "Or choose a file to start watching.")
+            color: "#a1a1aa"
+            horizontalAlignment: Text.AlignHCenter
+            wrapMode: Text.WordWrap
+            Layout.fillWidth: true
+        }
+
+        Button {
+            id: openVideoButton
+
+            action: HarunaApp.actions.openFileAction
+            Layout.alignment: Qt.AlignHCenter
+            Layout.topMargin: 4
+            implicitHeight: 40
+            leftPadding: 24
+            rightPadding: 24
+            hoverEnabled: true
+            contentItem: Label {
+                text: openVideoButton.text
+                color: "white"
+                font.bold: true
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+            }
+            background: Rectangle {
+                radius: 8
+                color: openVideoButton.down ? "#1c64b5"
+                       : openVideoButton.hovered ? "#4990e7" : "#3584e4"
+                border.width: openVideoButton.visualFocus ? 2 : 0
+                border.color: "white"
+            }
+        }
+    }
+
     Rectangle {
         id: loadingIndicator
 
         property bool play: false
         property int size: 200
 
-        visible: root.playbackState === MpvItem.PlaybackState.Stopped
-                 || (root.playbackState === MpvItem.PlaybackState.Loading && root.isRemoteUrl)
+        visible: root.playbackState === MpvItem.PlaybackState.Loading && root.isRemoteUrl
         anchors.centerIn: parent
         radius: Kirigami.Units.cornerRadius
         width: root.width > size ? size : root.width - 10

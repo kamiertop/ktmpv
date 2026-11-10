@@ -3420,3 +3420,61 @@ msgstr ""
 #~ msgctxt "@item:listbox the style of the playlist"
 #~ msgid "Compact"
 #~ msgstr "紧凑"
+
+#: src/qml/MpvVideo.qml
+msgctxt "@info:placeholder"
+msgid "Drop a video here"
+msgstr "拖拽视频到此处"
+
+#: src/qml/MpvVideo.qml
+msgctxt "@info:placeholder"
+msgid "Or choose a file to start watching."
+msgstr "或选择一个文件，开始播放"
+
+#: src/Playlist/Playlist.qml
+msgctxt "@title"
+msgid "Playlist"
+msgstr "播放列表"
+
+#: src/Playlist/Playlist.qml
+msgctxt "@info:placeholder"
+msgid "Your playlist is empty"
+msgstr "列表中还没有视频"
+
+#: src/Playlist/Playlist.qml
+msgctxt "@info:placeholder"
+msgid "Add files or drop them here"
+msgstr "添加文件，或将视频拖到这里"
+
+#: src/Playlist/Playlist.qml
+msgctxt "@info:placeholder"
+msgid "No matching files"
+msgstr "没有找到匹配的文件"
+
+#: src/Playlist/Playlist.qml
+msgctxt "@action:inmenu"
+msgid "Remove playlist"
+msgstr "移除播放列表"
+
+#: src/Playlist/Playlist.qml
+msgctxt "@action:button"
+msgid "More actions"
+msgstr "更多操作"
+
+#: src/Playlist/Playlist.qml
+#, kde-format
+msgctxt "@item:inlistbox"
+msgid "Video files (%1)"
+msgstr "视频文件 (%1)"
+
+#: src/Playlist/Playlist.qml
+#, kde-format
+msgctxt "@item:inlistbox"
+msgid "Audio files (%1)"
+msgstr "音频文件 (%1)"
+
+#: src/Playlist/Playlist.qml
+#, kde-format
+msgctxt "@item:inlistbox"
+msgid "All files (%1)"
+msgstr "所有文件 (%1)"

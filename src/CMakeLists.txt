@@ -5,7 +5,9 @@
 #
 
 # DATA_ICONS is defined in data/CMakeLists.txt
-ecm_add_app_icon(ICONS_SRCS ICONS ${DATA_ICONS})
+if(WIN32 OR APPLE)
+    ecm_add_app_icon(ICONS_SRCS ICONS ${DATA_ICONS})
+endif()
 
 qt_standard_project_setup(REQUIRES 6.8)
 
@@ -75,10 +77,32 @@ add_subdirectory(Utilities)
 add_subdirectory(YouTube)
 add_subdirectory(framedecoder)
 
+# Qt's generated resource/plugin initializers inherit their backing target's
+# autogen include directory. Ensure it exists before compiling them in parallel.
+foreach(qml_module IN ITEMS database playlist settings transcript utilities youtube)
+    add_dependencies(${qml_module}plugin_init ${qml_module}plugin_autogen)
+    get_target_property(qml_module_dir ${qml_module} BINARY_DIR)
+    get_property(qml_module_targets DIRECTORY "${qml_module_dir}" PROPERTY BUILDSYSTEM_TARGETS)
+    foreach(qml_target IN LISTS qml_module_targets)
+        if(qml_target MATCHES "^${qml_module}_resources_[0-9]+$")
+            add_dependencies(${qml_target} ${qml_module}_autogen)
+        endif()
+    endforeach()
+endforeach()
+
 set_source_files_properties(qml/Models.qml
     PROPERTIES QT_QML_SINGLETON_TYPE TRUE)
 
+set(qml_import_scan_options)
+get_target_property(qt_core_type Qt6::Core TYPE)
+if(CMAKE_SYSTEM_NAME IN_LIST DBUS_PLATFORMS AND qt_core_type STREQUAL "SHARED_LIBRARY")
+    # System QML plugins are loaded at runtime on these platforms. Their packages
+    # need not export CMake plugin targets. Link our static plugins explicitly below.
+    list(APPEND qml_import_scan_options NO_IMPORT_SCAN)
+endif()
+
 qt_add_qml_module(haruna
+    ${qml_import_scan_options}
     URI org.kde.haruna
     VERSION 1.0
     QML_FILES
@@ -90,6 +114,7 @@ qt_add_qml_module(haruna
         qml/MpvVideo.qml
         qml/Osd.qml
         qml/VolumeSlider.qml
+        qml/WindowCornerMask.qml
         qml/Main.qml
         qml/Models.qml
 
@@ -139,7 +164,9 @@ target_include_directories(haruna
         ${FFMPEG_INCLUDE_DIRS}
 )
 
-target_compile_definitions(haruna PRIVATE $<$<CONFIG:Debug>:QT_QML_DEBUG>)
+if(HARUNA_ENABLE_QML_DEBUGGING)
+    target_compile_definitions(haruna PRIVATE $<$<CONFIG:Debug>:QT_QML_DEBUG>)
+endif()
 
 target_link_libraries(haruna PRIVATE
     Qt6::Core
@@ -175,6 +202,17 @@ target_link_libraries(haruna PRIVATE
     Haruna::Utilities
     Haruna::YouTube
 )
+
+if(qml_import_scan_options)
+    target_link_libraries(haruna PRIVATE
+        databaseplugin
+        playlistplugin
+        settingsplugin
+        transcriptplugin
+        utilitiesplugin
+        youtubeplugin
+    )
+endif()
 
 if (CMAKE_SYSTEM_NAME IN_LIST DBUS_PLATFORMS)
     add_subdirectory(mpris)

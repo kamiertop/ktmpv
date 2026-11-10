@@ -40,9 +40,12 @@
       <default>false</default>
     </entry>
     <entry name="ShowPreviewThumbnail" type="bool">
-      <default>false</default>
+      <default>true</default>
     </entry>
     <entry name="AccuratePreviewThumbnail" type="bool">
+      <default>true</default>
+    </entry>
+    <entry name="PreviewOnHoverInitialized" type="bool">
       <default>false</default>
     </entry>
     <entry name="PreviewThumbnailWidth" type="int">

@@ -535,7 +535,7 @@ ActionsModel::ActionsModel(QObject *parent)
     action.name = u"togglePlaylistAction"_s;
     action.text = i18nc("@action", "Playlist");
     action.iconName = u"view-media-playlist"_s;
-    action.defaultShortcut = Qt::Key_P;
+    action.defaultShortcut = Qt::ALT | Qt::Key_1;
     action.shortcut = getShortcut(action.name, action.defaultShortcut);
     action.description = QString{};
     m_actions << action;

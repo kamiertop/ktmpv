@@ -89,25 +89,27 @@ Item {
 
         width: root.width
         height: root.height
+        radius: 10
 
-        Kirigami.Theme.colorSet: Kirigami.Theme.View
+        Kirigami.Theme.colorSet: Kirigami.Theme.Window
 
         color: {
             if (root.state === "Highlighted") {
-                return Qt.alpha(Kirigami.Theme.highlightColor, root.alpha)
+                return Qt.alpha(Kirigami.Theme.highlightColor, 0.10 * root.alpha)
             }
             if (root.state === "Hovered") {
-                return Qt.alpha(Kirigami.Theme.hoverColor, root.alpha)
+                return Qt.alpha(Kirigami.Theme.textColor, 0.055 * root.alpha)
             }
             if (root.state === "Selected") {
-                return Qt.lighter(Kirigami.Theme.highlightColor, 1.1)
+                return Qt.alpha(Kirigami.Theme.highlightColor, 0.17 * root.alpha)
             }
-            return Qt.alpha(Kirigami.Theme.backgroundColor, root.alpha)
+            return "transparent"
         }
 
         // Derived items must override this
         Item {
             id: contentItem
+            anchors.fill: parent
         }
     }
 
@@ -242,25 +244,22 @@ Item {
     }
 
     function getLabelColor() {
-        if (root.state === "Hovered") {
-            return Kirigami.Theme.highlightedTextColor
-        }
-        if (root.state === "Highlighted") {
-            return Kirigami.Theme.highlightedTextColor
+        if (root.isPlaying) {
+            return Kirigami.Theme.highlightColor
         }
         return Kirigami.Theme.textColor
     }
 
     function getFontSize() {
         if (Window.window === null) {
-            return 13
+            return 11
         }
 
         const mainWindow = Window.window as Main
         if (mainWindow.isFullScreen() && PlaylistSettings.bigFontFullscreen) {
-            return 19
+            return 15
         } else {
-            return 13
+            return 11
         }
     }
 

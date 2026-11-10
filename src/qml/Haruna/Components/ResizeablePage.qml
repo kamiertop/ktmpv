@@ -51,7 +51,7 @@ Page {
             y: -root.implicitHeaderHeight
             width: 1
             height: root.height
-            color: Kirigami.Theme.backgroundColor
+            color: Qt.alpha(Kirigami.Theme.textColor, 0.10)
 
             ResizeHandler {
                 id: resizeHandlerTall
@@ -74,13 +74,13 @@ Page {
 
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
-                width: 5
-                height: 50
-                color: (resizeHandlerTall.hovered || resizeHandlerCentral.hovered) ? Kirigami.Theme.highlightColor : Kirigami.Theme.alternateBackgroundColor
+                width: 3
+                height: 32
+                color: (resizeHandlerTall.hovered || resizeHandlerCentral.hovered) ? Kirigami.Theme.highlightColor : "transparent"
                 radius: Kirigami.Units.cornerRadius
                 border {
                     width: 1
-                    color: Kirigami.Theme.backgroundColor
+                    color: "transparent"
                 }
 
                 ResizeHandler {

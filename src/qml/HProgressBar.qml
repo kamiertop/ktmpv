@@ -9,6 +9,7 @@ pragma ComponentBehavior: Bound
 import QtQml
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Controls.Basic as Basic
 import QtQuick.Layouts
 
 import org.kde.ki18n
@@ -23,6 +24,7 @@ RowLayout {
 
     required property MpvVideo m_mpv
 
+    readonly property bool interacting: slider.pressed || progressBarMouseArea.containsMouse || chaptersPopup.visible
     property alias loopIndicator: loopIndicator
     property alias chaptersPopupIsOpen: chaptersPopup.visible
     property bool showChapterMarkers: GeneralSettings.showChapterMarkers
@@ -38,21 +40,22 @@ RowLayout {
 
     spacing: Kirigami.Units.smallSpacing
 
-    Slider {
+    Basic.Slider {
         id: slider
 
         property bool seekStarted: false
         property bool prePressPause: root.m_mpv.pause
         property double mouseX: 0
+        property double requestedPreviewPosition: 0
 
         function updateTooltip() : string {
-            if (progressBarBG.width === 0) {
-                return
+            if (progressBarBG.width <= 0 || slider.to <= 0) {
+                return ""
             }
 
             slider.mouseX = progressBarMouseArea.mouseX
-            const time = progressBarMouseArea.mouseX / progressBarBG.width * slider.to
-            previewMpvLoader.position = time
+            const time = Math.max(0, Math.min(slider.to, progressBarMouseArea.mouseX / progressBarBG.width * slider.to))
+            requestPreview(time)
             const chapterTitle = root.m_mpv.chaptersModel.titleAtPosition(time)
             const formattedTime = MiscUtils.formatTime(time)
             timePositionLabel.text = chapterTitle === ""
@@ -60,31 +63,59 @@ RowLayout {
                     :`${formattedTime} - ${chapterTitle}`
         }
 
+        function requestPreview(time: real): void {
+            requestedPreviewPosition = time
+            if (!previewSeekTimer.running) {
+                previewSeekTimer.start()
+            }
+        }
+
+        Timer {
+            id: previewSeekTimer
+            interval: 50
+            onTriggered: previewMpvLoader.position = slider.requestedPreviewPosition
+        }
+
+        enabled: root.m_mpv.duration > 0
         from: 0
         to: root.m_mpv.duration
         implicitWidth: root.width
         implicitHeight: root.height
         leftPadding: 0
         rightPadding: 0
+        hoverEnabled: true
 
         Layout.fillWidth: true
 
-        handle: Item { visible: false }
+        handle: Rectangle {
+            x: slider.leftPadding + slider.visualPosition * slider.availableWidth - width / 2
+            y: (slider.height - height) / 2
+            width: 10
+            height: 10
+            radius: 5
+            color: "#ffffff"
+            visible: slider.hovered || slider.pressed || slider.visualFocus
+        }
 
         background: Rectangle {
             id: progressBarBG
-            color: Kirigami.Theme.alternateBackgroundColor
+            x: slider.leftPadding
+            y: (slider.height - height) / 2
+            width: slider.availableWidth
+            height: 4
+            radius: height / 2
+            color: "#35ffffff"
             scale: slider.mirrored ? -1 : 1
 
             Rectangle {
                 id: loopIndicator
                 property double startPosition: -1
                 property double endPosition: -1
-                width: endPosition === -1 ? 1 : (endPosition / root.m_mpv.duration * progressBarBG.width) - x
+                width: endPosition === -1 || root.m_mpv.duration <= 0 ? 1 : Math.max(0, (endPosition / root.m_mpv.duration * progressBarBG.width) - x)
                 height: parent.height
                 color: Qt.hsla(0, 0, 0, 0.4)
                 visible: startPosition !== -1
-                x: startPosition / root.m_mpv.duration * progressBarBG.width
+                x: root.m_mpv.duration > 0 ? startPosition / root.m_mpv.duration * progressBarBG.width : 0
                 z: 110
             }
 
@@ -96,19 +127,21 @@ RowLayout {
 
                     objectName: "seekableRangeDelegate"
 
-                    x: start / root.m_mpv.duration * progressBarBG.width
+                    x: root.m_mpv.duration > 0 ? start / root.m_mpv.duration * progressBarBG.width : 0
                     y: (progressBarBG.height - height) / 2
-                    z: 200
-                    width: end / root.m_mpv.duration * progressBarBG.width - x
-                    height: 2
-                    color: Qt.darker(Kirigami.Theme.highlightColor, 1.5)
+                    z: 0
+                    width: root.m_mpv.duration > 0 ? Math.max(0, end / root.m_mpv.duration * progressBarBG.width - x) : 0
+                    height: parent.height
+                    radius: height / 2
+                    color: "#55ffffff"
                 }
             }
 
             Rectangle {
                 width: slider.position * parent.width
                 height: parent.height
-                color: Kirigami.Theme.highlightColor
+                radius: height / 2
+                color: "#ffffff"
             }
 
             Rectangle {
@@ -117,24 +150,22 @@ RowLayout {
                 property int margin: Kirigami.Units.smallSpacing
 
                 x: {
-                    if (slider.pressed) {
-                        const xPos = (slider.value / slider.to) * slider.width
-                        slider.mouseX = xPos
-                        return xPos - (progressBarToolTip.width * 0.5)
-                    }
-
-                    return slider.mouseX - (progressBarToolTip.width * 0.5)
+                    const position = slider.pressed && slider.to > 0
+                                     ? slider.value / slider.to * progressBarBG.width : slider.mouseX
+                    const left = root.m_mpv.mapToItem(progressBarBG, 12, 0).x
+                    const right = root.m_mpv.mapToItem(progressBarBG, root.m_mpv.width - 12, 0).x
+                    return Math.max(Math.min(left, right), Math.min(position - width / 2, Math.max(left, right) - width))
                 }
                 y: -height - Kirigami.Units.largeSpacing
                 z: 10
                 width: layout.width + (margin * 2)
                 height: layout.height + (margin * 2)
-                visible: progressBarMouseArea.containsMouse && root.m_mpv.duration > 0
+                visible: (progressBarMouseArea.containsMouse || slider.pressed) && root.m_mpv.duration > 0
 
-                color: Kirigami.Theme.backgroundColor
-                radius: Kirigami.Units.cornerRadius
+                color: "#f025262b"
+                radius: 10
                 border.width: 1
-                border.color: Qt.darker(Kirigami.Theme.backgroundColor, 1.2)
+                border.color: "#25ffffff"
 
                 ColumnLayout {
                     id: layout
@@ -148,7 +179,8 @@ RowLayout {
                         property double position: 0
                         property double aspectRatio: 2
 
-                        active: GeneralSettings.showPreviewThumbnail
+                        active: progressBarToolTip.visible
+                                && GeneralSettings.showPreviewThumbnail
                                 && previewMpvLoader.file !== ""
                                 && root.m_mpv.playbackState !== MpvItem.PlaybackState.Stopped
                                 && root.m_mpv.isLocalFile
@@ -164,7 +196,7 @@ RowLayout {
                             onAspectRatioChanged: previewMpvLoader.aspectRatio = aspectRatio || 2
                         }
 
-                        Layout.preferredWidth: GeneralSettings.previewThumbnailWidth
+                        Layout.preferredWidth: Math.max(64, Math.min(GeneralSettings.previewThumbnailWidth, root.m_mpv.width - 32))
                         Layout.preferredHeight: Math.ceil(Layout.preferredWidth / previewMpvLoader.aspectRatio)
                         Layout.alignment: Qt.AlignCenter
                     }
@@ -173,7 +205,7 @@ RowLayout {
                         id: timePositionLabel
 
                         elide: Text.ElideRight
-                        Kirigami.Theme.colorSet: Kirigami.Theme.Tooltip
+                        color: "#f4f4f5"
                         Layout.alignment: Qt.AlignCenter
                         Layout.maximumWidth: GeneralSettings.previewThumbnailWidth
                     }
@@ -184,6 +216,8 @@ RowLayout {
                 id: progressBarMouseArea
 
                 anchors.fill: parent
+                anchors.topMargin: -9
+                anchors.bottomMargin: -9
                 hoverEnabled: true
                 acceptedButtons: Qt.MiddleButton | Qt.RightButton
 
@@ -203,6 +237,8 @@ RowLayout {
                         chaptersPopup.open()
                     }
                 }
+
+                onEntered: slider.updateTooltip()
 
                 onMouseXChanged: {
                     slider.updateTooltip()
@@ -235,14 +271,11 @@ RowLayout {
                     ? formattedTime
                     :`${formattedTime} - ${chapterTitle}`
 
-            const previewItem = previewMpvLoader.item as MpvPreview
-            if (previewItem === null || !root.m_mpv.isLocalFile) {
-                return
-            }
-            previewItem.commandAsync(["seek", slider.value, "absolute"])
+            slider.requestPreview(slider.value)
         }
 
         onPressedChanged: {
+            seekStarted = pressed
             if (pressed) {
                 slider.prePressPause = root.m_mpv.getProperty(MpvProperties.Pause)
                 root.m_mpv.setPropertyBlocking(MpvProperties.Pause, true)
@@ -261,13 +294,14 @@ RowLayout {
             delegate: Rectangle {
                 required property double startTime
 
-                x: slider.mirrored
+                visible: root.m_mpv.duration > 0
+                x: root.m_mpv.duration <= 0 ? 0 : slider.mirrored
                    ? progressBarBG.width - (startTime / root.m_mpv.duration * progressBarBG.width)
                    : startTime / root.m_mpv.duration * progressBarBG.width
-                y: 0
-                height: slider.height
-                width: 2
-                color: Kirigami.Theme.textColor
+                y: progressBarBG.y
+                height: progressBarBG.height
+                width: 1
+                color: "#b3ffffff"
             }
         }
 
@@ -350,6 +384,9 @@ RowLayout {
         Connections {
             target: root.m_mpv
             function onFileStarted() {
+                previewSeekTimer.stop()
+                slider.requestedPreviewPosition = 0
+                previewMpvLoader.position = 0
                 loopIndicator.startPosition = -1
                 loopIndicator.endPosition = -1
                 previewMpvLoader.file = root.m_mpv.currentUrl

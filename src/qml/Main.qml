@@ -28,6 +28,69 @@ ApplicationWindow {
     property int previousVisibility: Window.Windowed
     property Kirigami.InlineMessage errorBox: null
     property var acceptedSubtitleTypes: ["application/x-subrip", "text/x-ssa", "text/x-microdvd"]
+    readonly property real windowRadius: isMaximized() || isFullScreen() ? 0 : 12
+    readonly property Item windowSurface: HarunaApp.windowSurface(appWindow)
+
+    function toggleMaximized() : void {
+        if (isMaximized()) {
+            showNormal()
+        } else {
+            showMaximized()
+        }
+    }
+
+    // The window's root item has no visual parent and cannot host a layer effect.
+    // Round the content and toolbars separately so their effects stay in the scene.
+    Binding {
+        target: appWindow.contentItem
+        property: "layer.enabled"
+        value: appWindow.windowRadius > 0
+    }
+
+    Binding {
+        target: appWindow.contentItem
+        property: "layer.effect"
+        value: roundedWindowEffect
+    }
+
+    Component {
+        id: roundedWindowEffect
+
+        WindowCornerMask {
+            cornerRadius: appWindow.windowRadius
+            roundTop: false
+            roundBottom: true
+        }
+    }
+
+    // System resize preserves the compositor's native resize behavior on Wayland.
+    Repeater {
+        parent: appWindow.windowSurface
+        model: [Qt.TopEdge | Qt.LeftEdge, Qt.TopEdge, Qt.TopEdge | Qt.RightEdge,
+                Qt.LeftEdge, Qt.RightEdge,
+                Qt.BottomEdge | Qt.LeftEdge, Qt.BottomEdge, Qt.BottomEdge | Qt.RightEdge]
+
+        delegate: MouseArea {
+            required property int modelData
+            readonly property bool leftEdge: (modelData & Qt.LeftEdge) !== 0
+            readonly property bool rightEdge: (modelData & Qt.RightEdge) !== 0
+            readonly property bool topEdge: (modelData & Qt.TopEdge) !== 0
+            readonly property bool bottomEdge: (modelData & Qt.BottomEdge) !== 0
+            readonly property bool corner: (leftEdge || rightEdge) && (topEdge || bottomEdge)
+            readonly property int gripSize: 8
+
+            x: leftEdge ? 0 : rightEdge ? appWindow.width - width : gripSize
+            y: topEdge ? 0 : bottomEdge ? appWindow.height - height : gripSize
+            width: leftEdge || rightEdge ? gripSize : appWindow.width - 2 * gripSize
+            height: topEdge || bottomEdge ? gripSize : appWindow.height - 2 * gripSize
+            z: 10000
+            enabled: !appWindow.isMaximized() && !appWindow.isFullScreen()
+            cursorShape: corner
+                         ? (leftEdge === topEdge ? Qt.SizeFDiagCursor : Qt.SizeBDiagCursor)
+                         : (leftEdge || rightEdge ? Qt.SizeHorCursor : Qt.SizeVerCursor)
+            onPressed: appWindow.startSystemResize(modelData)
+        }
+    }
 
     function initPlaylist() : void {
         if (!playlist.isReady || !mpv.isReady) {
@@ -77,9 +140,7 @@ ApplicationWindow {
 
         appWindow.width = mpv.videoWidth
         appWindow.height = mpv.videoHeight
-                + (footerItem.isFloating ? 0 : footerItem.height)
                 + (headerItem.visible ? headerItem.height : 0)
-                + (menuBar.visible ? menuBar.height : 0)
     }
 
     objectName: "HarunaMainWindow"
@@ -90,10 +151,34 @@ ApplicationWindow {
     height: 600
     minimumWidth: 400
     minimumHeight: 200
-    color: Kirigami.Theme.backgroundColor
+    flags: Qt.Window | Qt.FramelessWindowHint
+    color: "transparent"
+    background: Rectangle {
+        color: Kirigami.Theme.backgroundColor
+        radius: appWindow.windowRadius
+    }
 
     Component.onCompleted: {
+        if (!GeneralSettings.previewOnHoverInitialized) {
+            GeneralSettings.showPreviewThumbnail = true
+            GeneralSettings.accuratePreviewThumbnail = true
+            GeneralSettings.previewOnHoverInitialized = true
+            GeneralSettings.save()
+        }
+        // Apply the sidebar layout once to existing installations as well.
+        if (!PlaylistSettings.manualSidebarInitialized) {
+            PlaylistSettings.position = "left"
+            PlaylistSettings.canToggleWithMouse = false
+            PlaylistSettings.overlayVideo = false
+            PlaylistSettings.manualSidebarInitialized = true
+            PlaylistSettings.save()
+        }
         HarunaApp.setupEventFilter(appWindow)
+        if (PlaylistSettings.sidebarAppearanceVersion < 1) {
+            PlaylistSettings.playlistWidth = Math.min(PlaylistSettings.playlistWidth, 320)
+            PlaylistSettings.sidebarAppearanceVersion = 1
+            PlaylistSettings.save()
+        }
         HarunaApp.activateColorScheme(GeneralSettings.colorScheme)
 
         const hasCommandLineFile = HarunaApp.url(0).toString() !== ""
@@ -139,18 +224,14 @@ ApplicationWindow {
     header: Header {
         id: headerItem
 
-        m_mpv: mpv
-        m_menuBarLoader: menuBarLoader
-    }
+        layer.enabled: appWindow.windowRadius > 0
+        layer.effect: WindowCornerMask {
+            cornerRadius: appWindow.windowRadius
+            roundTop: true
+        }
 
-    menuBar: MenuBarLoader {
-        id: menuBarLoader
-
-        state: !appWindow.isFullScreen() && GeneralSettings.showMenuBar
-               ? "visible"
-               : "hidden"
         m_mpv: mpv
-        onVisibleChanged: appWindow.resizeWindow()
+        playlistVisible: playlist.state === "visible"
     }
 
 
@@ -179,9 +260,7 @@ ApplicationWindow {
         playlistsManager: playlist.manager
 
         width: appWindow.contentItem.width
-        height: appWindow.isFullScreen()
-                ? appWindow.contentItem.height
-                : appWindow.contentItem.height - (footerItem.isFloating ? 0 : footerItem.height)
+        height: appWindow.contentItem.height
         anchors.left: playlist.edge === Qt.LeftEdge
                       ? PlaylistSettings.overlayVideo ? appWindow.contentItem.left : playlist.right
                       : transcript.right
@@ -258,11 +337,15 @@ ApplicationWindow {
     Footer {
         id: footerItem
 
-        anchors.bottom: appWindow.contentItem.bottom
+        parent: mpv
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        z: 100
 
         m_mpv: mpv
         playlistsManager: playlist.manager
-        m_menuBarLoader: menuBarLoader
+        m_menuBarLoader: headerItem.m_menuBarLoader
         m_header: headerItem
     }
 

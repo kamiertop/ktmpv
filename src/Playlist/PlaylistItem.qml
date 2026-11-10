@@ -15,135 +15,113 @@ import org.kde.haruna.settings
 PlaylistItemDelegate {
     id: root
 
-    property real dragHandleWidth: Math.max(rowNumberItem.implicitWidth, dragHandle.implicitWidth)
+    property bool showThumbnail: false
+    readonly property string displayTitle: PlaylistSettings.showMediaTitle ? titleWithFallback : nameWithFallbackRole
 
-    implicitHeight: (getFontSize() * 3)
+    implicitHeight: showThumbnail ? 72 : 64
 
-    contentItem: Rectangle {
-        width: root.width
+    contentItem: Item {
+        anchors.fill: parent
 
         RowLayout {
             anchors.fill: parent
-            spacing: Kirigami.Units.largeSpacing
+            anchors.margins: 12
+            spacing: 10
 
             Item {
-                clip: true
-                Layout.alignment: Qt.AlignCenter
-                Layout.fillHeight: true
-                Layout.leftMargin: Kirigami.Units.largeSpacing
-                Layout.bottomMargin: Kirigami.Units.largeSpacing
-                Layout.topMargin: Kirigami.Units.largeSpacing
+                Layout.preferredWidth: 20
+                Layout.preferredHeight: 28
 
-                Layout.preferredWidth: {
-                    if (rowNumberItem.visible || root.hovered) {
-                        return root.dragHandleWidth
-                    }
-                    return 0
+                Label {
+                    anchors.centerIn: parent
+                    text: root.isPlaying ? "▶" : (PlaylistSettings.showRowNumber ? root.rowNumber : "")
+                    color: root.isPlaying ? Kirigami.Theme.highlightColor : Kirigami.Theme.disabledTextColor
+                    font.pixelSize: 11
+                    visible: !root.hovered
                 }
-
-                Behavior on Layout.preferredWidth {
-                    NumberAnimation {
-                        duration: Kirigami.Units.longDuration
-                        easing.type: Easing.OutCubic
+                Kirigami.ListItemDragHandle {
+                    anchors.centerIn: parent
+                    visible: root.hovered
+                    width: 20
+                    height: 28
+                    listItem: root.dragRect
+                    listView: root.ListView.view
+                    onMoveRequested: function(oldIndex, newIndex) {
+                        root.selectItem(oldIndex, PlaylistFilterProxyModel.Single)
+                        root.moveItems(oldIndex, newIndex)
                     }
-                }
-
-                Row {
-                    height: parent.height
-                    spacing: 0
-
-                    x: root.hovered ? 0 : -parent.width
-
-                    Behavior on x {
-                        NumberAnimation {
-                            duration: Kirigami.Units.longDuration
-                            easing.type: Easing.OutCubic
-                        }
-                    }
-
-                    Kirigami.ListItemDragHandle {
-                        id: dragHandle
-
-                        listItem: root.dragRect
-                        listView: root.ListView?.view
-                        width: root.dragHandleWidth
-
-                        onMoveRequested: function (oldIndex, newIndex) {
-                            root.selectItem(oldIndex, PlaylistFilterProxyModel.Single)
-                            root.moveItems(oldIndex, newIndex)
-                        }
-
-                        onDragActiveChanged: {
-                            root.cacheItem()
-                        }
-
-                        anchors.verticalCenter: parent.verticalCenter
-                    }
-
-                    Label {
-                        id: rowNumberItem
-
-                        text: root.rowNumber
-                        color: root.getLabelColor()
-                        visible: PlaylistSettings.showRowNumber
-                        font.pointSize: root.getFontSize()
-                        horizontalAlignment: Qt.AlignHCenter
-                        anchors.verticalCenter: parent.verticalCenter
-                        width: root.dragHandleWidth
-                    }
+                    onDragActiveChanged: root.cacheItem()
                 }
             }
 
             Rectangle {
-                color: Qt.alpha(Kirigami.Theme.textColor, 0.2)
-                visible: PlaylistSettings.showRowNumber
-                Layout.preferredWidth: 1
-                Layout.fillHeight: true
-                Layout.topMargin: Kirigami.Units.smallSpacing
-                Layout.bottomMargin: Kirigami.Units.smallSpacing
+                visible: root.showThumbnail
+                Layout.preferredWidth: 64
+                Layout.preferredHeight: 44
+                radius: 6
+                color: Qt.alpha(Kirigami.Theme.textColor, 0.06)
+                clip: true
+                Image {
+                    anchors.fill: parent
+                    anchors.margins: 2
+                    source: root.showThumbnail ? "image://thumbnail/%1".arg(root.path) : ""
+                    sourceSize.width: 128
+                    sourceSize.height: 88
+                    asynchronous: true
+                    fillMode: Image.PreserveAspectCrop
+                }
             }
 
-            Kirigami.Icon {
-                source: "media-playback-start"
-                color: root.getLabelColor()
-                visible: root.isPlaying
-                Layout.preferredWidth: Kirigami.Units.iconSizes.small
-                Layout.preferredHeight: Kirigami.Units.iconSizes.small
-            }
-
-            LabelWithTooltip {
-                color: root.getLabelColor()
-                horizontalAlignment: Qt.AlignLeft
-                verticalAlignment: Qt.AlignVCenter
-                elide: Text.ElideRight
-                font.pointSize: root.getFontSize()
-                text: PlaylistSettings.showMediaTitle ? root.titleWithFallback : root.nameWithFallbackRole
+            ColumnLayout {
+                spacing: 4
                 Layout.fillWidth: true
-            }
-
-            Label {
-                text: root.formattedDuration.length > 0 ? root.formattedDuration : ""
-                color: root.getLabelColor()
-                font.pointSize: root.getFontSize()
-                Layout.margins: Kirigami.Units.largeSpacing
-
-                Rectangle {
-                    visible: PlaybackSettings.restoreFilePosition
-                    anchors.right: parent.right
-                    anchors.top: parent.bottom
-                    height: 2
-                    width: parent.width
-                    color: Kirigami.Theme.visitedLinkBackgroundColor
-
-                    Rectangle {
-                        height: 2
-                        width: root.isPlaying
-                               ? root.m_mpv.position/root.m_mpv.duration * parent.width
-                               : root.playbackPosition * parent.width
-                        color: Kirigami.Theme.visitedLinkColor
+                LabelWithTooltip {
+                    text: root.displayTitle
+                    toolTipText: root.displayTitle
+                    color: root.getLabelColor()
+                    font.pointSize: root.getFontSize()
+                    font.weight: root.isPlaying ? Font.DemiBold : Font.Medium
+                    elide: Text.ElideRight
+                    Layout.fillWidth: true
+                }
+                RowLayout {
+                    spacing: 8
+                    Layout.fillWidth: true
+                    Label {
+                        text: root.nameWithFallbackRole !== root.displayTitle ? root.nameWithFallbackRole : root.formattedDuration
+                        color: Kirigami.Theme.disabledTextColor
+                        font.pointSize: Math.max(9, root.getFontSize() - 2)
+                        elide: Text.ElideRight
+                        Layout.fillWidth: true
+                    }
+                    Label {
+                        text: root.formattedDuration
+                        visible: root.nameWithFallbackRole !== root.displayTitle
+                        color: Kirigami.Theme.disabledTextColor
+                        font.pointSize: Math.max(9, root.getFontSize() - 2)
                     }
                 }
-
+            }
+        }
+        Rectangle {
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
+            anchors.leftMargin: 42
+            anchors.rightMargin: 12
+            anchors.bottomMargin: 5
+            height: 2
+            radius: 1
+            visible: PlaybackSettings.restoreFilePosition && progress > 0
+            readonly property real progress: Math.max(0, Math.min(1,
+                root.isPlaying && root.m_mpv.duration > 0
+                ? root.m_mpv.position / root.m_mpv.duration : root.playbackPosition))
+            color: Qt.alpha(Kirigami.Theme.highlightColor, 0.12)
+            Rectangle {
+                width: parent.width * parent.progress
+                height: parent.height
+                radius: 1
+                color: Qt.alpha(Kirigami.Theme.highlightColor, 0.65)
             }
         }
     }

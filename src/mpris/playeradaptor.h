@@ -27,22 +27,22 @@ public:
     Q_PROPERTY(QString PlaybackStatus READ playbackStatus CONSTANT)
     QString playbackStatus();
 
-    Q_PROPERTY(QString LoopStatus READ loopStatus WRITE setLoopStatus CONSTANT)
+    Q_PROPERTY(QString LoopStatus READ loopStatus WRITE setLoopStatus)
     QString loopStatus();
     void setLoopStatus(const QString &newLoopStatus);
 
-    Q_PROPERTY(double Rate READ rate WRITE setRate CONSTANT)
+    Q_PROPERTY(double Rate READ rate WRITE setRate)
     double rate() const;
     void setRate(double newRate);
 
-    Q_PROPERTY(bool Shuffle READ shuffle WRITE setShuffle CONSTANT)
+    Q_PROPERTY(bool Shuffle READ shuffle WRITE setShuffle)
     bool shuffle();
     void setShuffle(bool newShuffle);
 
     Q_PROPERTY(QVariantMap Metadata READ metadata CONSTANT)
     QVariantMap metadata();
 
-    Q_PROPERTY(double Volume READ volume WRITE setVolume CONSTANT)
+    Q_PROPERTY(double Volume READ volume WRITE setVolume)
     double volume();
     void setVolume(double newVolume);
 
