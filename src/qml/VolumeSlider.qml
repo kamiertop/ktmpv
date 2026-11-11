@@ -33,7 +33,7 @@ Basic.Slider {
         width: root.availableWidth
         height: 3
         radius: height / 2
-        color: "#35ffffff"
+        color: "#60ffffff"
         Rectangle {
             x: root.mirrored ? parent.width - width : 0
             width: root.position * parent.width

@@ -130,6 +130,19 @@ Item {
         enabled: root.controlsVisible
         Behavior on opacity { NumberAnimation { duration: 120 } }
 
+        Rectangle {
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
+            height: Math.min(parent.height + 24, root.m_mpv.height)
+            gradient: Gradient {
+                GradientStop { position: 0; color: "#00000000" }
+                GradientStop { position: 0.35; color: "#42000000" }
+                GradientStop { position: 0.60; color: "#c0000000" }
+                GradientStop { position: 1; color: "#d9000000" }
+            }
+        }
+
         MouseArea {
             anchors.fill: parent
             acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton

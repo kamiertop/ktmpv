@@ -104,7 +104,7 @@ RowLayout {
             width: slider.availableWidth
             height: 4
             radius: height / 2
-            color: "#35ffffff"
+            color: "#60ffffff"
             scale: slider.mirrored ? -1 : 1
 
             Rectangle {
@@ -133,7 +133,7 @@ RowLayout {
                     width: root.m_mpv.duration > 0 ? Math.max(0, end / root.m_mpv.duration * progressBarBG.width - x) : 0
                     height: parent.height
                     radius: height / 2
-                    color: "#55ffffff"
+                    color: "#88ffffff"
                 }
             }
 
