@@ -11,9 +11,9 @@ endif()
 
 qt_standard_project_setup(REQUIRES 6.8)
 
-qt_add_executable(haruna)
+qt_add_executable(ktmpv)
 
-target_sources(haruna
+target_sources(ktmpv
     PRIVATE
     application.h application.cpp
     lockmanager.h lockmanager.cpp
@@ -36,19 +36,19 @@ target_sources(haruna
     ${ICONS_SRCS}
 )
 
-ecm_qt_declare_logging_category(haruna
+ecm_qt_declare_logging_category(ktmpv
     HEADER "logging/_general.h"
     IDENTIFIER "HarunaGeneral"
     CATEGORY_NAME "org.kde.haruna.general"
     DEFAULT_SEVERITY Info
 )
 
-qt_add_resources(haruna animations
+qt_add_resources(ktmpv animations
     FILES
         ../data/animations/192-haruna-animation-sliding.png
 )
 
-qt6_add_shaders(haruna
+qt6_add_shaders(ktmpv
     URI org.kde.haruna
     VERSION 1.0
     PREFIX
@@ -59,11 +59,11 @@ qt6_add_shaders(haruna
 
 if (CMAKE_SYSTEM_NAME IN_LIST DBUS_PLATFORMS)
     qt_add_dbus_interface(haruna_screensaver_inhibit_SRCS ../org.freedesktop.ScreenSaver.xml screensaverdbusinterface)
-    target_sources(haruna
+    target_sources(ktmpv
         PRIVATE
         ${haruna_screensaver_inhibit_SRCS}
     )
-    target_include_directories(haruna
+    target_include_directories(ktmpv
         PRIVATE
             ${CMAKE_CURRENT_BINARY_DIR}
     )
@@ -101,7 +101,7 @@ if(CMAKE_SYSTEM_NAME IN_LIST DBUS_PLATFORMS AND qt_core_type STREQUAL "SHARED_LI
     list(APPEND qml_import_scan_options NO_IMPORT_SCAN)
 endif()
 
-qt_add_qml_module(haruna
+qt_add_qml_module(ktmpv
     ${qml_import_scan_options}
     URI org.kde.haruna
     VERSION 1.0
@@ -157,7 +157,7 @@ qt_add_qml_module(haruna
         ${COMPILED_SHADERS}
 )
 
-target_include_directories(haruna
+target_include_directories(ktmpv
     PRIVATE
         models
         mpv
@@ -165,10 +165,10 @@ target_include_directories(haruna
 )
 
 if(HARUNA_ENABLE_QML_DEBUGGING)
-    target_compile_definitions(haruna PRIVATE $<$<CONFIG:Debug>:QT_QML_DEBUG>)
+    target_compile_definitions(ktmpv PRIVATE $<$<CONFIG:Debug>:QT_QML_DEBUG>)
 endif()
 
-target_link_libraries(haruna PRIVATE
+target_link_libraries(ktmpv PRIVATE
     Qt6::Core
     Qt6::Core5Compat
     Qt6::Gui
@@ -204,7 +204,7 @@ target_link_libraries(haruna PRIVATE
 )
 
 if(qml_import_scan_options)
-    target_link_libraries(haruna PRIVATE
+    target_link_libraries(ktmpv PRIVATE
         databaseplugin
         playlistplugin
         settingsplugin
@@ -216,9 +216,9 @@ endif()
 
 if (CMAKE_SYSTEM_NAME IN_LIST DBUS_PLATFORMS)
     add_subdirectory(mpris)
-    target_link_libraries(haruna
+    target_link_libraries(ktmpv
         PRIVATE
             Haruna::Mpris
     )
 endif()
-install(TARGETS haruna DESTINATION ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS ktmpv DESTINATION ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})

@@ -29,8 +29,8 @@ ActionsModel::ActionsModel(QObject *parent)
     m_actions << action;
 
     action.name = u"aboutHarunaAction"_s;
-    action.text = i18nc("@action", "About Haruna");
-    action.iconName = u"haruna"_s;
+    action.text = i18nc("@action", "About %1", u"ktmpv"_s);
+    action.iconName = u"ktmpv"_s;
     action.defaultShortcut = Qt::Key_F1;
     action.shortcut = getShortcut(action.name, action.defaultShortcut);
     action.description = QString{};

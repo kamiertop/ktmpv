@@ -53,7 +53,7 @@ jobs:
           set -euo pipefail
           rpm_packages=(build/rpm/RPMS/x86_64/ktmpv-[0-9]*.rpm)
           dnf -y install "${rpm_packages[@]}"
-          test -f /usr/share/applications/org.kde.haruna.desktop
+          test -f /usr/share/applications/io.github.kamiertop.ktmpv.desktop
 
           test_dir=$(mktemp -d)
           trap 'rm -rf "$test_dir"' EXIT
@@ -62,7 +62,7 @@ jobs:
           env QT_QPA_PLATFORM=offscreen QT_QUICK_BACKEND=software \
             XDG_RUNTIME_DIR="$test_dir/runtime" XDG_CONFIG_HOME="$test_dir/config" \
             XDG_DATA_HOME="$test_dir/data" XDG_CACHE_HOME="$test_dir/cache" \
-            timeout 5s /usr/bin/haruna > "$test_dir/startup.log" 2>&1 || result=$?
+            timeout 5s /usr/bin/ktmpv > "$test_dir/startup.log" 2>&1 || result=$?
           cat "$test_dir/startup.log"
           # A running GUI exits with timeout's status in the headless runner.
           test "$result" -eq 124

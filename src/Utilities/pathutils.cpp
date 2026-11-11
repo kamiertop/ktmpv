@@ -21,9 +21,9 @@ class PathUtilsPrivate
 
 public:
     PathUtilsPrivate()
-        : m_config(KSharedConfig::openConfig(u"haruna/haruna.conf"_s, KConfig::SimpleConfig, QStandardPaths::GenericConfigLocation))
-        , m_ccConfig(KSharedConfig::openConfig(u"haruna/custom-commands.conf"_s, KConfig::SimpleConfig, QStandardPaths::GenericConfigLocation))
-        , m_shortcutsConfig(KSharedConfig::openConfig(u"haruna/shortcuts.conf"_s, KConfig::SimpleConfig, QStandardPaths::GenericConfigLocation))
+        : m_config(KSharedConfig::openConfig(u"ktmpv/ktmpv.conf"_s, KConfig::SimpleConfig, QStandardPaths::GenericConfigLocation))
+        , m_ccConfig(KSharedConfig::openConfig(u"ktmpv/custom-commands.conf"_s, KConfig::SimpleConfig, QStandardPaths::GenericConfigLocation))
+        , m_shortcutsConfig(KSharedConfig::openConfig(u"ktmpv/shortcuts.conf"_s, KConfig::SimpleConfig, QStandardPaths::GenericConfigLocation))
     {
     }
     KSharedConfig::Ptr m_config;
@@ -52,21 +52,21 @@ QString PathUtils::configFileParentPath(ConfigFile configFile)
 {
     switch (configFile) {
     case ConfigFile::Main: {
-        auto path = QStandardPaths::writableLocation(d_ptr->m_config->locationType()).append(u"/haruna"_s);
+        auto path = QStandardPaths::writableLocation(d_ptr->m_config->locationType()).append(u"/ktmpv"_s);
         if (QFileInfo::exists(path)) {
             return path;
         }
         break;
     }
     case ConfigFile::CustomCommands: {
-        auto path = QStandardPaths::writableLocation(d_ptr->m_ccConfig->locationType()).append(u"/haruna"_s);
+        auto path = QStandardPaths::writableLocation(d_ptr->m_ccConfig->locationType()).append(u"/ktmpv"_s);
         if (QFileInfo::exists(path)) {
             return path;
         }
         break;
     }
     case ConfigFile::Shortcuts: {
-        auto path = QStandardPaths::writableLocation(d_ptr->m_shortcutsConfig->locationType()).append(u"/haruna"_s);
+        auto path = QStandardPaths::writableLocation(d_ptr->m_shortcutsConfig->locationType()).append(u"/ktmpv"_s);
         if (QFileInfo::exists(path)) {
             return path;
         }
@@ -74,7 +74,7 @@ QString PathUtils::configFileParentPath(ConfigFile configFile)
     }
     case ConfigFile::Database:
     case ConfigFile::PlaylistCache: {
-        auto path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation).append(u"/haruna"_s);
+        auto path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation).append(u"/ktmpv"_s);
 
         if (QFileInfo::exists(path)) {
             return path;
@@ -102,20 +102,20 @@ QString PathUtils::configFilePath(ConfigFile configFile)
         return path.append(d_ptr->m_shortcutsConfig->name());
     }
     case ConfigFile::Database: {
-        auto path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation).append(u"/haruna/"_s);
+        auto path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation).append(u"/ktmpv/"_s);
 
         QDir dir(path);
         if (dir.exists()) {
-            return path.append(u"haruna.db"_s);
+            return path.append(u"ktmpv.db"_s);
         }
         if (dir.mkpath(path)) {
-            return path.append(u"haruna.db"_s);
+            return path.append(u"ktmpv.db"_s);
         }
 
         return {};
     }
     case ConfigFile::PlaylistCache: {
-        auto path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation).append(u"/haruna/"_s);
+        auto path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation).append(u"/ktmpv/"_s);
 
         QDir dir(path);
         if (dir.exists()) {
@@ -135,7 +135,7 @@ QString PathUtils::configFilePath(ConfigFile configFile)
 QString PathUtils::playlistsFolder()
 {
     auto path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
-    path.append(u"/haruna/playlists"_s);
+    path.append(u"/ktmpv/playlists"_s);
 
     QDir dir(path);
     if (dir.exists()) {

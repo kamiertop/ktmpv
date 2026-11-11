@@ -77,7 +77,7 @@ Item {
         }
 
         function onReportBugAction() {
-            Qt.openUrlExternally("https://bugs.kde.org/enter_bug.cgi?product=Haruna")
+            Qt.openUrlExternally("https://github.com/kamiertop/ktmpv/issues")
         }
 
         function onSponsorAction() {

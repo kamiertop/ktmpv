@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ SPDX-FileCopyrightText: 2020 George Florea Bănuș <georgefb899@gmail.com>
+
+ SPDX-License-Identifier: CC-BY-4.0
+ -->
+<component type="desktop-application">
+  <name>ktmpv</name>
+  <id>io.github.kamiertop.ktmpv</id>
+  <launchable type="desktop-id">io.github.kamiertop.ktmpv.desktop</launchable>
+  <metadata_license>CC-BY-4.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+  <url type="homepage">https://github.com/kamiertop/ktmpv</url>
+  <url type="bugtracker">https://github.com/kamiertop/ktmpv/issues</url>
+  <url type="donation">https://github.com/sponsors/g-fb</url>
+  <url type="vcs-browser">https://github.com/kamiertop/ktmpv</url>
+  <summary>Media player</summary>
+  <summary xml:lang="ar">مشغل وسائط</summary>
+  <summary xml:lang="ca">Reproductor multimèdia</summary>
+  <summary xml:lang="ca-valencia">Reproductor multimèdia</summary>
+  <summary xml:lang="cs">Přehrávač médií</summary>
+  <summary xml:lang="de">Medienwiedergabe</summary>
+  <summary xml:lang="en-GB">Media player</summary>
+  <summary xml:lang="eo">Ludilo por aŭdvidaĵoj</summary>
+  <summary xml:lang="es">Reproductor multimedia</summary>
+  <summary xml:lang="eu">Hedabide-jotzailea</summary>
+  <summary xml:lang="fi">Mediasoitin</summary>
+  <summary xml:lang="fr">Lecteur de média</summary>
+  <summary xml:lang="gl">Reprodutor multimedia</summary>
+  <summary xml:lang="he">נגן מדיה</summary>
+  <summary xml:lang="ia">Media Player (Reproductor de Media)</summary>
+  <summary xml:lang="id">Pemutar media</summary>
+  <summary xml:lang="it">Lettore multimediale</summary>
+  <summary xml:lang="ka">მედია დამკვრელი</summary>
+  <summary xml:lang="ko">미디어 재생기</summary>
+  <summary xml:lang="lt">Medijos leistuvė</summary>
+  <summary xml:lang="lv">Multivides atskaņotājs</summary>
+  <summary xml:lang="nl">Mediaspeler</summary>
+  <summary xml:lang="pl">Odtwarzacz multimedialny</summary>
+  <summary xml:lang="pt-BR">Reprodutor de mídia</summary>
+  <summary xml:lang="ro">Lector multimedia</summary>
+  <summary xml:lang="ru">Медиапроигрыватель</summary>
+  <summary xml:lang="sa">मीडिया प्लेयर</summary>
+  <summary xml:lang="sk">Prehrávač médií</summary>
+  <summary xml:lang="sl">Predvajalnik medijev</summary>
+  <summary xml:lang="sv">Mediaspelare</summary>
+  <summary xml:lang="tr">Ortam Oynatıcısı</summary>
+  <summary xml:lang="ug">ۋاسىتە ياڭراتقۇچ</summary>
+  <summary xml:lang="uk">Мультимедійний програвач</summary>
+  <summary xml:lang="zh-CN">媒体播放器</summary>
+  <summary xml:lang="zh-TW">媒體播放器</summary>
+  <developer id="org.kde">
+    <name translate="no">George Florea Bănuș</name>
+  </developer>
+  <description>
+    <p>Open source media player with lots of options to make it work the way you want it.</p>
+    <p xml:lang="ar">مشغل وسائط مفتوح المصدر مع الكثير من الخيارات لتشغيله بالطريقة التي تريدها.</p>
+    <p xml:lang="ca">Reproductor multimèdia de codi obert amb moltes opcions per a fer que funcioni de la manera que vulgueu.</p>
+    <p xml:lang="ca-valencia">Reproductor multimèdia de codi obert amb moltes opcions per a fer que funcione de la manera que vulgueu.</p>
+    <p xml:lang="cs">Mediální přehrávač s otevřeným zdrojovým kódem, který nabízí spoustu možností, jak si ho přizpůsobit podle svých představ.</p>
+    <p xml:lang="de">Open-Source-Medienwiedergabe mit vielen Einstellungsmöglichkeiten, damit alles genau so funktioniert, wie Sie es möchten.</p>
+    <p xml:lang="es">Reproductor multimedia de código abierto con muchas opciones para que funcione a su gusto.</p>
+    <p xml:lang="eu">Sorburu irekiko hedabide jotzailea zuk nahi duzun bezala ibiltzeko aukera asko dituena.</p>
+    <p xml:lang="fi">Avoimen lähdekoodin mediasoitin, jonka runsain asetuksin saat toimimaan juuri kuten haluat.</p>
+    <p xml:lang="fr">Lecteur multimédia « Open source » proposant de nombreuses options pour qu'il fonctionne exactement comme vous le souhaitez.</p>
+    <p xml:lang="he">נגן מדיה בקוד פתוח עם מגוון רחב של אפשרויות כדי שיפעל כמו שמתאים לך.</p>
+    <p xml:lang="it">Riproduttore multimediale open source ricco di opzioni e con grandi possibilità di personalizzazione.</p>
+    <p xml:lang="ka">ღია კოდის მქონე მედიის დამკვრელი ბევრი პარამეტრებით, რომ ის ისე მოირგოთ, როგორც თქვენ გნებავთ.</p>
+    <p xml:lang="ko">원하는 대로 설정할 수 있는 오픈 소스 미디어 재생기입니다.</p>
+    <p xml:lang="lt">Atvirojo kodo medijos leistuvė su daugybe parinkčių, skirtų pritaikyti leistuvę savo poreikiams.</p>
+    <p xml:lang="lv">Atvērtā pirmkoda multivides atskaņotājs ar plašām iespējām, ļaujot to pielāgot savai gaumei.</p>
+    <p xml:lang="nl">Open-source mediaspeler met heel veel opties om het te laten werken op de manier zoals u wilt.</p>
+    <p xml:lang="pt-BR">Reprodutor de mídia de código aberto com muitas opções para fazê-lo funcionar do jeito que você deseja.</p>
+    <p xml:lang="ro">Lector multimedia cu sursă deschisă ce oferă multe opțiuni pentru a-l ajusta după bunul plac.</p>
+    <p xml:lang="ru">Медиапроигрыватель с открытым исходным кодом, который предоставляет множество параметров, позволяющих настроить его под требования пользователя.</p>
+    <p xml:lang="sk">Open source prehrávač médií s množstvom volieb na prispôsobenie podľa vašich potrieb.</p>
+    <p xml:lang="sl">Odprtokodni predvajalnik medijev s številnimi možnostmi, da deluje tako, kot želite.</p>
+    <p xml:lang="sv">Mediaspelare med öppen källkod och många alternativ för att få den att fungera som du vill.</p>
+    <p xml:lang="tr">İsteğinize göre yapılandırmanıza olanak tanıyan açık kaynaklı ortam oynatıcısı</p>
+    <p xml:lang="uk">Мультимедійний програвач із відкритим кодом, який має багато параметрів роботи, щоб працювати так, як ви цього хочете.</p>
+    <p xml:lang="zh-CN">一款自由开源媒体播放器，提供丰富选项，可按您的需求进行设置。</p>
+    <p xml:lang="zh-TW">提供許多選項供自訂的開源媒體播放器。</p>
+    <p>Features</p>
+    <p xml:lang="ar">الميزات</p>
+    <p xml:lang="ast">Funciones</p>
+    <p xml:lang="ca">Característiques</p>
+    <p xml:lang="ca-valencia">Característiques</p>
+    <p xml:lang="cs">Vlastnosti</p>
+    <p xml:lang="de">Funktionen</p>
+    <p xml:lang="en-GB">Features</p>
+    <p xml:lang="eo">Trajtoj</p>
+    <p xml:lang="es">Funcionalidades</p>
+    <p xml:lang="eu">Ezaugarriak</p>
+    <p xml:lang="fi">Ominaisuudet</p>
+    <p xml:lang="fr">Fonctionnalités</p>
+    <p xml:lang="gl">Funcionalidades:</p>
+    <p xml:lang="he">יכולות</p>
+    <p xml:lang="hi">विशेषताएँ</p>
+    <p xml:lang="ia">Characteristicas</p>
+    <p xml:lang="id">Fitur</p>
+    <p xml:lang="it">Caratteristiche</p>
+    <p xml:lang="ka">თვისებები</p>
+    <p xml:lang="ko">기능</p>
+    <p xml:lang="lt">Ypatybės</p>
+    <p xml:lang="lv">Iespējas</p>
+    <p xml:lang="nl">Mogelijkheden</p>
+    <p xml:lang="pl">Możliwości</p>
+    <p xml:lang="pt">Características</p>
+    <p xml:lang="pt-BR">Recursos</p>
+    <p xml:lang="ro">Caracteristici</p>
+    <p xml:lang="ru">Особенности</p>
+    <p xml:lang="sa">गुणाः</p>
+    <p xml:lang="sk">Funkcie</p>
+    <p xml:lang="sl">Zmožnosti</p>
+    <p xml:lang="sv">Funktioner</p>
+    <p xml:lang="ta">அம்சங்கள்</p>
+    <p xml:lang="tr">Özellikler</p>
+    <p xml:lang="ug">ئىقتىدار</p>
+    <p xml:lang="uk">Можливості</p>
+    <p xml:lang="zh-CN">功能介绍</p>
+    <p xml:lang="zh-TW">功能</p>
+    <ul>
+      <li>play online videos, through youtube-dl</li>
+      <li xml:lang="ar">يشغل فيدويات على الشابكة بواسطة youtube-dl</li>
+      <li xml:lang="ca">Reprodueix vídeos en línia a través de youtube-dl</li>
+      <li xml:lang="ca-valencia">Reproduïx vídeos en línia a través de youtube-dl</li>
+      <li xml:lang="cs">přehrávání videí online pomocí youtube-dl</li>
+      <li xml:lang="de">Internetvideos mittels youtube-dl wiedergeben</li>
+      <li xml:lang="en-GB">play online videos, through youtube-dl</li>
+      <li xml:lang="eo">ludi interretajn filmetojn, per youtube-dl</li>
+      <li xml:lang="es">reproducción de vídeos en línea, usando youtube-dl</li>
+      <li xml:lang="eu">youtube-dl bidez lerroko bideoak jotzea</li>
+      <li xml:lang="fi">verkkovideotoisto youtube-dl:llä</li>
+      <li xml:lang="fr">Lecture en ligne de vidéos, grâce à youtube-dl</li>
+      <li xml:lang="gl">Reproducir vídeos por Internet mediante youtube-dl.</li>
+      <li xml:lang="he">ניגון סרטונים מקוונים, באמצעות youtube-dl</li>
+      <li xml:lang="hi">यूट्यूब-डीएल के माध्यम से ऑनलाइन वीडियो चलाएं </li>
+      <li xml:lang="id">putar video online, melalui youtube-dl</li>
+      <li xml:lang="it">riproduce video in linea tramite youtube-dl</li>
+      <li xml:lang="ka">დაუკარით ონლაინ ვიდეოები, YouTube-dl-ის საშუალებით</li>
+      <li xml:lang="ko">youtube-dl을 사용하여 온라인 동영상 재생</li>
+      <li xml:lang="lt">atkuria internetinius vaizdo įrašus, per youtube-dl</li>
+      <li xml:lang="lv">atskaņo tiešsaistes video, izmantojot „youtube-dl“</li>
+      <li xml:lang="nl">online video's afspelen, via youtube-dl</li>
+      <li xml:lang="pl">odtwarzanie filmów z sieci, poprzez youtube-dl</li>
+      <li xml:lang="pt">reproduzir vídeos 'online' através do 'youtube-dl'</li>
+      <li xml:lang="pt-BR">reproduza vídeos online, através do youtube-dl</li>
+      <li xml:lang="ro">redă videoclipuri online, prin youtube-dl</li>
+      <li xml:lang="ru">воспроизведение видео из Интернета с помощью youtube-dl</li>
+      <li xml:lang="sa">ऑनलाइन विडियो प्ले कुर्वन्तु, youtube-dl मार्गेण</li>
+      <li xml:lang="sk">prehrávanie online videí cez youtube-dl</li>
+      <li xml:lang="sl">predvaja spletne videoposnetke prek youtube-dl</li>
+      <li xml:lang="sv">spela nätvideor via youtube-dl</li>
+      <li xml:lang="tr">çevrim içi videoları youtube-dl aracılığıyla oynat</li>
+      <li xml:lang="uk">відтворення інтернет-відео за допомогою youtube-dl</li>
+      <li xml:lang="zh-CN">通过 youtube-dl 程序播放在线视频</li>
+      <li xml:lang="zh-TW">透過 youtube-dl 播放線上影片</li>
+      <li>supports youtube playlists</li>
+      <li xml:lang="ar">يدعم قوائم تشغيل يوتيوب</li>
+      <li xml:lang="ca">Admet les llistes de reproducció de YouTube</li>
+      <li xml:lang="ca-valencia">Admet les llistes de reproducció de YouTube</li>
+      <li xml:lang="cs">podporuje seznamy skladeb YouTube</li>
+      <li xml:lang="de">Unterstützung von Youtube-Wiedergabelisten</li>
+      <li xml:lang="en-GB">supports YouTube playlists</li>
+      <li xml:lang="eo">subtenas jutubajn ludlistojn</li>
+      <li xml:lang="es">permite listas de reproducción de YouTube</li>
+      <li xml:lang="eu">youtube-ko jotze-zerrendekin bateragarria</li>
+      <li xml:lang="fi">YouTuben soittolistojen tuki</li>
+      <li xml:lang="fr">Prend en charge les liste de lecture youtube</li>
+      <li xml:lang="gl">Compatíbel con listas de reprodución de YouTube.</li>
+      <li xml:lang="he">תמיכה ברשימות נגינה של YouTube</li>
+      <li xml:lang="hi">यूट्यूब प्लेलिस्ट का समर्थन करता है</li>
+      <li xml:lang="id">mendukung playlist youtube</li>
+      <li xml:lang="it">supporta scalette youtube</li>
+      <li xml:lang="ka">youTube-ის დასაკრავი სიების მხარდაჭერა</li>
+      <li xml:lang="ko">YouTube 재생 목록 지원</li>
+      <li xml:lang="lt">palaiko „YouTube“ grojaraščius</li>
+      <li xml:lang="lv">atbalsta „YouTube“ repertuārus</li>
+      <li xml:lang="nl">ondersteunt youtube afspeellijsten</li>
+      <li xml:lang="pl">obsługa list odtwarzania youtube</li>
+      <li xml:lang="pt">suporta as listas de reprodução do YouTube</li>
+      <li xml:lang="pt-BR">suporta playlists do youtube</li>
+      <li xml:lang="ro">susține liste de redare Youtube</li>
+      <li xml:lang="ru">поддержка списков воспроизведения YouTube</li>
+      <li xml:lang="sa">youtube प्लेलिस्ट् समर्थयति</li>
+      <li xml:lang="sk">podpora zoznamov skladieb YouTube</li>
+      <li xml:lang="sl">podpira youtube sezname predvajanj</li>
+      <li xml:lang="sv">stöder YouTube spellistor</li>
+      <li xml:lang="tr">youtube oynatma listelerini destekler</li>
+      <li xml:lang="uk">підтримка списків відтворення youtube</li>
+      <li xml:lang="zh-CN">支持 YouTube 播放列表</li>
+      <li xml:lang="zh-TW">支援 youtube 播放清單</li>
+      <li>toggle playlist with mouse-over, playlist overlays the video</li>
+      <li xml:lang="ar">يظهر قائمة التشغيل إذا مُررت الفأرة، بحيث قائمة التشغيل فوق الفيديو</li>
+      <li xml:lang="ca">Alterna la llista de reproducció amb el ratolí, la llista de reproducció se superposa al vídeo</li>
+      <li xml:lang="ca-valencia">Alterna la llista de reproducció amb el ratolí, la llista de reproducció se superposa al vídeo</li>
+      <li xml:lang="cs">přepínání seznamu skladeb při najetí myší, seznam skladeb překryje video</li>
+      <li xml:lang="de">Wiedergabeliste durch Überfahren mit der Maus einblenden, Darstellung der Liste über dem Videobild</li>
+      <li xml:lang="en-GB">toggle playlist with mouse-over, playlist overlays the video</li>
+      <li xml:lang="eo">baskulu ludliston per muso-super, ludlisto supermetas la videon</li>
+      <li xml:lang="es">conmutar la lista de reproducción al situar el ratón, que se superpone al vídeo</li>
+      <li xml:lang="eu">sagua gainetik igarotzean jotze-zerrenda txandakatzea, jotze-zerrenda bideoaren gainean jartzen du</li>
+      <li xml:lang="fi">soittolista näyttö videon päällä hiiren rullaa pyöräyttämällä</li>
+      <li xml:lang="fr">Basculer la liste de lecture avec un survol de souris. La liste d lecture se superpose au dessus de la vidéo.</li>
+      <li xml:lang="gl">Conmutar listas de reprodución ao cubrir co rato, para que apareza sobre o vídeo.</li>
+      <li xml:lang="he">החלפת מצב רשימות נגינה עם מעבר העכבר מעליהן, רשימת הנגינה חופפת לסרטון</li>
+      <li xml:lang="id">jungkit playlist dengan mouse, playlist melayang di atas video</li>
+      <li xml:lang="it">attiva e disattiva la scaletta al passaggio del mouse, la scaletta si sovrappone al video</li>
+      <li xml:lang="ka">დასაკრავი სიის გადართვა თაგუნას გადატარებით. სია ვიდეოს გადაფარავს</li>
+      <li xml:lang="ko">마우스 동작으로 재생 목록 전환, 동영상 위에 표시</li>
+      <li xml:lang="lt">galimybė perjungti grojaraščius užvedant pelę, grojaraštis padengia vaizdo įrašą</li>
+      <li xml:lang="lv">pārslēdz repertuāru ar peles kursora pārlikšanu, repertuārs pārklāj video</li>
+      <li xml:lang="nl">afspeellijst omschakelen met muis-er-boven, afspeellijst gaat over de video</li>
+      <li xml:lang="pl">przełączanie list odtwarzania po najechaniu na nie, lista odtwarzania nakłada się na film</li>
+      <li xml:lang="pt">comutação da lista de reprodução à passagem do rato, sobreposição da lista sobre o vídeo</li>
+      <li xml:lang="pt-BR">alternar a lista de reprodução com o mouse, a playlist sobrepõe o vídeo</li>
+      <li xml:lang="ro">comută lista de redare cu planarea mausului, lista se suprapune peste video</li>
+      <li xml:lang="ru">переключение списка воспроизведения с помощью наведения указателя мыши, список воспроизведения накладывается на видео</li>
+      <li xml:lang="sa">माउस-ओवर-सहितं प्लेलिस्ट् टॉग्ल् कुर्वन्तु, प्लेलिस्ट् विडियो आच्छादयति</li>
+      <li xml:lang="sk">prepnutie zoznamu skladieb pohybom myši, zoznam skladieb prekrýva video</li>
+      <li xml:lang="sl">preklaplja sezname predvajanj z miško nad njimi, seznam je nad video posnetkom</li>
+      <li xml:lang="sv">visa eller dölj spellistan genom att hålla musen över, spellistan visas ovanpå videon</li>
+      <li xml:lang="tr">oynatma listelerini fare imleci üzerine geldiğinde aç/kapat, liste videonun üzerine yerleşir</li>
+      <li xml:lang="uk">перемикання списків відтворення за допомогою наведення вказівника миші, накладання списку відтворення на відео</li>
+      <li xml:lang="zh-CN">鼠标悬停时自动在画面上叠加显示播放列表</li>
+      <li xml:lang="zh-TW">滑鼠懸停來切換播放清單，播放清單顯示於影片之上</li>
+      <li>auto skip chapter containing certain words</li>
+      <li xml:lang="ar">إمكانية تخطي آليّة لأي فصل يحوي كلمات معينة</li>
+      <li xml:lang="ca">Salt automàtic de capítols que contenen certes paraules</li>
+      <li xml:lang="ca-valencia">Salt automàtic de capítols que contenen certes paraules</li>
+      <li xml:lang="cs">automatické přeskakování kapitoly obsahující určitá slova</li>
+      <li xml:lang="de">Automatisch Kapitel mit bestimmten Wörtern überspringen</li>
+      <li xml:lang="en-GB">auto skip chapter containing certain words</li>
+      <li xml:lang="eo">aŭtomata transsalti ĉapitron enhavantan certajn vortojn</li>
+      <li xml:lang="es">omitir automáticamente capítulos que contengan ciertas palabras</li>
+      <li xml:lang="eu">hitz jakin batzuk dituzten atalak saihestea</li>
+      <li xml:lang="fi">tiettyjä sanoja sisältävien lukujen automaattinen ohitus</li>
+      <li xml:lang="fr">Ignore automatiquement les chapitres contenant certains mots</li>
+      <li xml:lang="gl">Saltar automaticamente capítulos que conteñen certas palabras.</li>
+      <li xml:lang="he">דילוג על פרקים שמכילים מילים מסוימות</li>
+      <li xml:lang="id">auto lewati bab yang mengandung kata tertentu</li>
+      <li xml:lang="it">salto automatico dei capitoli contenenti determinate parole</li>
+      <li xml:lang="ka">გარკვეული სიტყვების შემცველი თავის ავტომატური გამოტოვება</li>
+      <li xml:lang="ko">특정한 단어가 포함된 챕터 건너뛰기</li>
+      <li xml:lang="lt">galimybė automatiškai praleisti skyrius, kuriuose yra tam tikri žodžiai</li>
+      <li xml:lang="lv">automātiski izlaist daļu, kas satur noteiktus vārdus</li>
+      <li xml:lang="nl">hoofdstuk met bepaalde woorden overslaan</li>
+      <li xml:lang="pl">pomijanie rozdziałów zawierających pewne słowa</li>
+      <li xml:lang="pt">saltar automaticamente capítulos com certas palavras</li>
+      <li xml:lang="pt-BR">pular automaticamente capítulo que contêm certas palavras</li>
+      <li xml:lang="ro">sare automat capitolul conținând anumite cuvinte</li>
+      <li xml:lang="ru">автоматический пропуск разделов, содержащих указанные слова</li>
+      <li xml:lang="sa">auto skip अध्यायः यस्मिन् कतिपयशब्दाः सन्ति</li>
+      <li xml:lang="sk">automatické preskočenie kapitoly obsahujúcej určité slová</li>
+      <li xml:lang="sl">samodejno preskoči poglavje, ki vsebuje določene besede</li>
+      <li xml:lang="sv">hoppa automatiskt över kapitel som innehåller vissa ord</li>
+      <li xml:lang="tr">kimi sözcükleri içeren fasılları kendiliğinden atla</li>
+      <li xml:lang="uk">автоматичне пропускання розділів, що містять певні слова</li>
+      <li xml:lang="zh-CN">自动跳过名称中包含某些单词的章节</li>
+      <li xml:lang="zh-TW">自動跳過包含某些單詞的章節</li>
+      <li>configurable shortcuts and mouse buttons</li>
+      <li xml:lang="ar">دعم لتخصيص الاختصارات وأزرار الفأرة</li>
+      <li xml:lang="ca">Dreceres i botons del ratolí configurables</li>
+      <li xml:lang="ca-valencia">Dreceres i botons del ratolí configurables</li>
+      <li xml:lang="cs">nastavitelné klávesové zkratky a tlačítka myši</li>
+      <li xml:lang="de">Einstellbare Kurzbefehle und Maustasten</li>
+      <li xml:lang="en-GB">configurable shortcuts and mouse buttons</li>
+      <li xml:lang="eo">agordeblaj ŝparvojoj kaj musbutonoj</li>
+      <li xml:lang="es">atajos de teclado y botones del ratón configurables</li>
+      <li xml:lang="eu">lasterbide eta saguaren botoi konfiguragarriak</li>
+      <li xml:lang="fi">mukautettavat pikanäppäimet ja hiiripainikkeet</li>
+      <li xml:lang="fr">Raccourcis configurable et boutons de souris</li>
+      <li xml:lang="gl">Atallos e botóns de rato configurábeis.</li>
+      <li xml:lang="he">אפשר להגדיר קיצורי דרך וכפתורי עכבר</li>
+      <li xml:lang="hi">विन्यास योग्य शॉर्टकट और माउस बटन</li>
+      <li xml:lang="id">pintasan dan tombol mouse yang dapat dikonfigurasi</li>
+      <li xml:lang="it">scorciatoie e pulsanti del mouse configurabili</li>
+      <li xml:lang="ka">მორგებადი მალსახმობები და თაგუნას ღილაკები</li>
+      <li xml:lang="ko">단축키와 마우스 단추 설정 가능</li>
+      <li xml:lang="lt">konfigūruojami spartieji klavišai ir pelės mygtukai</li>
+      <li xml:lang="lv">konfigurējamas saīsnes un peles pogas</li>
+      <li xml:lang="nl">te configureren sneltoetsen en muisknoppen</li>
+      <li xml:lang="pl">dostosowywalne skróty i przyciski myszy</li>
+      <li xml:lang="pt">atalhos e botões de rato configuráveis</li>
+      <li xml:lang="pt-BR">configurar atalhos e botões do mouse</li>
+      <li xml:lang="ro">scurtături și butoane de maus configurabile</li>
+      <li xml:lang="ru">настраиваемые комбинации клавиш и кнопки мыши</li>
+      <li xml:lang="sa">विन्यासयोग्याः शॉर्टकट् तथा मूषकस्य बटन्</li>
+      <li xml:lang="sk">konfigurovateľné skratky a tlačidlá myši</li>
+      <li xml:lang="sl">nastavljive bližnjice in gumbi na miški</li>
+      <li xml:lang="sv">anpassningsbara genvägar och musknappar</li>
+      <li xml:lang="tr">yapılandırılabilir kısayollar ve fare düğmeleri</li>
+      <li xml:lang="uk">придатні до налаштовування клавіатурні скорочення та прив'язка до кнопок миші</li>
+      <li xml:lang="zh-CN">可自定义快捷键和鼠标键功能</li>
+      <li xml:lang="zh-TW">可調整的快捷鍵和滑鼠按鈕</li>
+      <li>quick jump to next chapter by middle click on progress bar</li>
+      <li xml:lang="ar">قفزة سريعة إلى الفصل التالي عن طريق النقر الأوسط على شريط التقدم</li>
+      <li xml:lang="ca">Salt ràpid cap al capítol següent fent clic al mig sobre la barra de progrés</li>
+      <li xml:lang="ca-valencia">Salt ràpid cap al capítol següent clicant al mig damunt de la barra de progrés</li>
+      <li xml:lang="cs">rychlý přechod na další kapitolu kliknutím prostředním tlačítkem myši na ukazatel průběhu</li>
+      <li xml:lang="de">Schnelles Springen zum nächsten Kapitel per Mittelklick auf den Fortschrittsbalken</li>
+      <li xml:lang="en-GB">quick jump to next chapter by middle click on progress bar</li>
+      <li xml:lang="eo">rapida salto al la sekva ĉapitro per meza alklako sur progresbreto</li>
+      <li xml:lang="es">salto rápido al siguiente capítulo mediante clic central en la barra de avance</li>
+      <li xml:lang="eu">hurrengo kapitulura azkar joatea aurrerapen-barran erdiko klik eginda</li>
+      <li xml:lang="fi">hyppy luvusta toiseen napsauttamalla hiiren keskipainikkeella etenemispalkkia</li>
+      <li xml:lang="fr">Passage rapide au chapitre suivant par un clic sur le bouton de souris du milieu sur la barre de progression</li>
+      <li xml:lang="gl">Saltar rapidamente ao seguinte capítulo usando o clic central na barra de progreso.</li>
+      <li xml:lang="he">דילוג מהיר לפרק הבא בלחיצה אמצעית על פס ההתקדמות</li>
+      <li xml:lang="id">lompat cepat ke bab selanjutnya dengan klik tengah pada bilah progres</li>
+      <li xml:lang="it">salto rapido al capitolo successivo tramite clic col pulsante centrale sulla barra di avanzamento</li>
+      <li xml:lang="ka">მიმდინარეობის ზოლზე შუა წკაპით შემდეგ თავზე სწრაფი გადასვლა</li>
+      <li xml:lang="ko">진행 표시기에서 가운데 단추 클릭으로 다음 챕터로 이동</li>
+      <li xml:lang="lt">galimybė greitai peršokti prie kito skyriaus spustelėjant viduriniuoju pelės mygtuku ant eigos juostos</li>
+      <li xml:lang="lv">ātri pāriet uz nākamo daļu ar vidējo klikšķi progresa joslā</li>
+      <li xml:lang="nl">snelle sprong naar volgende hoofdstuk door middelste klik op voortgangsbalk</li>
+      <li xml:lang="pl">szybkie skoki do następnych rozdziałów na środkowy przycisk myszy na pasku postępu</li>
+      <li xml:lang="pt">salto rápido para o capítulo seguinte com o botão do meio do rato sobre a barra de progresso</li>
+      <li xml:lang="pt-BR">pular rapidamente para o próximo capítulo por um click no meio da barra de progresso</li>
+      <li xml:lang="ro">sare rapid la următorul capitol prin clic-mijloc pe bara de progres</li>
+      <li xml:lang="ru">быстрый переход к следующему разделу по щелчку средней кнопкой мыши</li>
+      <li xml:lang="sa">quick jump to next chapter by middle प्रगतिपट्टिकायां क्लिक् कुर्वन्तु</li>
+      <li xml:lang="sk">rýchly skok na ďalšiu kapitolu stredným kliknutím na ukazovateľ priebehu</li>
+      <li xml:lang="sl">hitri skon na naslednje poglavje s srednjim klikom na drsniku napredka</li>
+      <li xml:lang="sv">gå snabbt till nästa kapitel genom att mittenklicka på förloppsraden</li>
+      <li xml:lang="tr">ilerleme çubuğuna orta tıklayarak sonraki fasıla çabucak atla</li>
+      <li xml:lang="uk">швидкий перехід до наступного розділу клацанням середньою кнопкою миші на смужці поступу</li>
+      <li xml:lang="zh-CN">中键点击进度条，快速跳转到下一章节</li>
+      <li xml:lang="zh-TW">中鍵點擊進度欄來快速跳至下一章節</li>
+    </ul>
+  </description>
+  <releases>
+    <release version="0.1.1" date="2026-11-11"/>
+  </releases>
+  <screenshots>
+    <screenshot type="default">
+      <caption>ktmpv main window</caption>
+      <caption xml:lang="zh-CN">ktmpv 主窗口</caption>
+      <image>https://raw.githubusercontent.com/kamiertop/ktmpv/master/data/screenshots/home.png</image>
+    </screenshot>
+  </screenshots>
+  <content_rating type="oars-1.0"/>
+</component>

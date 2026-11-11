@@ -17,6 +17,16 @@ msgstr ""
 "X-Crowdin-File: /kf6-trunk/messages/haruna/haruna.pot\n"
 "X-Crowdin-File-ID: 48560\n"
 
+#: src/Settings/AboutSettingsPage.qml
+msgctxt "@info:about"
+msgid "ktmpv is a media player based on KDE Haruna, with a redesigned interface and playback controls."
+msgstr "ktmpv 是基于 KDE Haruna 二次开发的媒体播放器，重新设计了界面和播放控件。"
+
+#: src/Settings/AboutSettingsPage.qml
+msgctxt "@action:button"
+msgid "Haruna project"
+msgstr "Haruna 上游项目"
+
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
 msgid "Your names"

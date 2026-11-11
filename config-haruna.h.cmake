@@ -6,3 +6,5 @@
 
 /* Defines whether we are building with dbus enabled */
 #cmakedefine01 HAVE_DBUS
+
+#define KTMPV_LOCALE_DIR "@KTMPV_LOCALE_DIR@"

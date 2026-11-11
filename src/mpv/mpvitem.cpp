@@ -203,7 +203,7 @@ void MpvItem::initProperties()
     setProperty(MpvProperties::self()->ScreenshotTemplate, VideoSettings::screenshotTemplate());
     setProperty(MpvProperties::self()->ScreenshotFormat, VideoSettings::screenshotFormat());
 
-    setProperty(MpvProperties::self()->AudioClientName, u"haruna"_s);
+    setProperty(MpvProperties::self()->AudioClientName, u"ktmpv"_s);
     setProperty(MpvProperties::self()->AudioLanguage, AudioSettings::preferredLanguage().remove(u" "_s));
 }
 
@@ -718,8 +718,8 @@ void MpvItem::updateTaskbarPlaybackProgress()
         map.insert(u"progress-visible"_s, isProgressVisible);
         map.insert(u"progress"_s, position() / duration());
 
-        QDBusMessage msg = QDBusMessage::createSignal(u"/org/kde/haruna"_s, u"com.canonical.Unity.LauncherEntry"_s, u"Update"_s);
-        msg << u"application://org.kde.haruna.desktop"_s << map;
+        QDBusMessage msg = QDBusMessage::createSignal(u"/io/github/kamiertop/ktmpv"_s, u"com.canonical.Unity.LauncherEntry"_s, u"Update"_s);
+        msg << u"application://io.github.kamiertop.ktmpv.desktop"_s << map;
 
         QDBusConnection::sessionBus().send(msg);
     });

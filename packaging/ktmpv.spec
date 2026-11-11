@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: CC0-1.0
 Name:           ktmpv
-Version:        0.1.0
+Version:        0.1.1
 Release:        1%{?dist}
 Summary:        Qt media player based on Haruna and libmpv
 License:        GPL-3.0-or-later AND GPL-2.0-or-later AND BSD-3-Clause AND CC-BY-4.0 AND CC0-1.0
@@ -50,7 +50,6 @@ Requires:       qt6qml(org.kde.kitemmodels)
 Requires:       qt6qml(org.kde.kquickcontrols)
 Recommends:     breeze-icon-theme
 Recommends:     yt-dlp
-Conflicts:      haruna
 
 %description
 Ktmpv is a Haruna fork with a compact playback interface, a collapsible playlist
@@ -68,16 +67,18 @@ sidebar, a redesigned settings window and timeline thumbnails for local video.
 %find_lang haruna
 
 %check
-desktop-file-validate %{buildroot}%{_datadir}/applications/org.kde.haruna.desktop
+desktop-file-validate %{buildroot}%{_datadir}/applications/io.github.kamiertop.ktmpv.desktop
 
 %files -f haruna.lang
+%dir %{_datadir}/ktmpv
+%dir %{_datadir}/ktmpv/locale
 %license LICENSES/*.txt
 %doc README.md
-%{_bindir}/haruna
-%{_datadir}/applications/org.kde.haruna.desktop
-%{_datadir}/metainfo/org.kde.haruna.metainfo.xml
-%{_datadir}/icons/hicolor/*/apps/haruna.*
+%{_bindir}/ktmpv
+%{_datadir}/applications/io.github.kamiertop.ktmpv.desktop
+%{_datadir}/metainfo/io.github.kamiertop.ktmpv.metainfo.xml
+%{_datadir}/icons/hicolor/*/apps/ktmpv.*
 
 %changelog
-* Wed Nov 11 2026 Ktmpv contributors - 0.1.0-1
-- Initial Ktmpv RPM release.
+* Wed Nov 11 2026 Ktmpv contributors - 0.1.1-1
+- Use the ktmpv application identity throughout the package.

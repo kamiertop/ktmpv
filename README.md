@@ -22,12 +22,14 @@ ktmpv 是 [KDE Haruna](https://invent.kde.org/multimedia/haruna) 的分支，使
 在 Fedora 45 上，可以用下面的命令安装下载的包。
 
 ```bash
-sudo dnf install ./ktmpv-0.1.0-1.fc45.x86_64.rpm
+sudo dnf install ./ktmpv-0.1.1-1.fc45.x86_64.rpm
 ```
 
-DNF 会安装运行依赖。应用菜单中的名称仍是 **Haruna**，也可以用 `haruna` 启动。更新时下载新版本的 RPM 并用同一条安装命令，卸载用 `sudo dnf remove ktmpv`。
+DNF 会安装运行依赖。应用菜单中的名称是 **ktmpv**，也可以用 `ktmpv` 启动。更新时下载新版本的 RPM 并用同一条安装命令，卸载用 `sudo dnf remove ktmpv`。
 
-Ktmpv 沿用上游的 `haruna` 可执行文件名、`org.kde.haruna` 桌面 ID 和 Haruna 配置。它与 Fedora 仓库中的原生 `haruna` RPM 不能同时安装。如果已有原生 Haruna，先卸载该 RPM 再装 Ktmpv。原来的用户配置会继续使用。
+ktmpv 的桌面 ID 是 `io.github.kamiertop.ktmpv`，可与 Fedora 仓库中的 Haruna 同时安装。配置和数据分别放在 `~/.config/ktmpv` 和 `~/.local/share/ktmpv`（遵循 XDG 目录设置）。
+
+从 0.1.0 升级时，旧版配置和数据仍在 `~/.config/haruna` 和 `~/.local/share/haruna`。如需继承，退出播放器后，将这两个目录中需要的内容复制到对应的 `ktmpv` 目录，并把复制后的 `haruna.conf` 和 `haruna.db` 分别改名为 `ktmpv.conf` 和 `ktmpv.db`。
 
 ## 从源码构建
 
@@ -43,10 +45,21 @@ sudo dnf install kf6-qqc2-desktop-style qt6-qtwayland
 
 cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
 cmake --build build --parallel 4
-./build/bin/haruna
+./build/bin/ktmpv
 ```
 
 如果需要系统安装和卸载，请使用上面的 RPM 流程。
+
+直接运行 `./build/bin/ktmpv` 时，若桌面门户报 `App info not found for 'io.github.kamiertop.ktmpv'`，可以在仓库根目录运行下面的命令，为当前用户注册指向构建产物的桌面入口。RPM 安装时会自动注册桌面入口。
+
+```bash
+desktop-file-install \
+  --dir="${XDG_DATA_HOME:-$HOME/.local/share}/applications" \
+  --set-key=Exec --set-value="\"$PWD/build/bin/ktmpv\" %U" \
+  data/io.github.kamiertop.ktmpv.desktop
+```
+
+切换到 RPM 版时，删除这个用户级入口，应用菜单就会使用 RPM 安装的入口。
 
 ## 构建测试包与发布
 
@@ -55,15 +68,15 @@ cmake --build build --parallel 4
 - 在 GitHub 的 **Actions → Fedora RPM → Run workflow** 选择分支即可构建测试包。成功后从该次运行的 **Artifacts** 下载，解压后用 DNF 安装。
 - 正式发布前，确认 [RPM spec](packaging/ktmpv.spec) 的 `Version` 和 `%changelog` 对应本次发布。后续发布时递增 `Version`。提交并推送后，在该提交上创建与版本一致的标签。打包和启动检查通过后，工作流会发布 RPM 和 `SHA256SUMS` 到 Releases。
 
-首个版本设为 `0.1.0`。在准备发布的提交上运行以下命令。
+当前版本为 `0.1.1`。在准备发布的提交上运行以下命令。
 
 ```bash
 git push origin master
-git tag -a ktmpv-v0.1.0 -m "Ktmpv 0.1.0"
-git push origin ktmpv-v0.1.0
+git tag -a ktmpv-v0.1.1 -m "Ktmpv 0.1.1"
+git push origin ktmpv-v0.1.1
 ```
 
-RPM 版本由 spec 管理，程序「关于」页仍显示 CMake 中的 Haruna 版本。`ktmpv-v` 前缀用来区分分支发布与上游标签。
+发布时同步更新 RPM spec、CMake 和 AppStream 元数据中的版本号。`ktmpv-v` 前缀用来区分分支发布与上游标签。
 
 ## 同步 Haruna 上游
 
@@ -86,7 +99,7 @@ git merge upstream/HEAD
 
 cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
 cmake --build build --parallel 4
-./build/bin/haruna
+./build/bin/ktmpv
 ```
 
 如果合并产生冲突，逐个处理并完成合并提交，再继续构建。检查窗口、播放控件、播放列表、设置和缩略预览。若上游提高 Qt 或 KDE Frameworks 的最低要求，或改变安装文件，记得同步更新 spec 和工作流。

@@ -23,7 +23,7 @@ SettingsBasePage {
         RowLayout {
             spacing: 16
             Kirigami.Icon {
-                source: "haruna"
+                source: "ktmpv"
                 Layout.preferredWidth: 56
                 Layout.preferredHeight: 56
             }
@@ -39,6 +39,11 @@ SettingsBasePage {
                     color: Kirigami.Theme.disabledTextColor
                 }
             }
+        }
+        Label {
+            text: KI18n.i18nc("@info:about", "ktmpv is a media player based on KDE Haruna, with a redesigned interface and playback controls.")
+            Layout.fillWidth: true
+            wrapMode: Text.Wrap
         }
         Label { text: root.details.copyrightStatement }
 
@@ -82,8 +87,8 @@ SettingsBasePage {
                 onClicked: Qt.openUrlExternally(root.details.bugAddress)
             }
             SettingsControls.ActionButton {
-                text: KI18n.i18nc("@action:button", "Get Involved")
-                onClicked: Qt.openUrlExternally("https://community.kde.org/Get_Involved")
+                text: KI18n.i18nc("@action:button", "Haruna project")
+                onClicked: Qt.openUrlExternally("https://invent.kde.org/multimedia/haruna")
             }
             SettingsControls.ActionButton {
                 text: KI18n.i18nc("@action:button", "Donate")

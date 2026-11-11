@@ -1,11 +1,11 @@
 # SPDX-FileCopyrightText: 2022 George Florea Bănuș <georgefb899@gmail.com>
 # SPDX-License-Identifier: CC0-1.0
-app-id: org.kde.haruna
+app-id: io.github.kamiertop.ktmpv
 runtime: org.kde.Platform
 runtime-version: '6.11'
 sdk: org.kde.Sdk
-command: haruna
-rename-icon: haruna
+command: ktmpv
+rename-icon: ktmpv
 copy-icon: true
 tags:
   - nightly
@@ -23,7 +23,7 @@ finish-args:
   - --filesystem=xdg-data/Trash
   - --talk-name=org.freedesktop.ScreenSaver
   - --talk-name=org.freedesktop.FileManager1
-  - --own-name=org.mpris.MediaPlayer2.haruna
+  - --own-name=org.mpris.MediaPlayer2.ktmpv
   - --system-talk-name=org.freedesktop.UDisks2
 cleanup:
   - '*.a'
@@ -35,10 +35,10 @@ cleanup:
   - /mkspecs
 
 modules:
-  - name: haruna
+  - name: ktmpv
     buildsystem: cmake-ninja
     post-install:
-      - cp -r LICENSES $FLATPAK_DEST/share/licenses/$FLATPAK_ID/haruna/
+      - cp -r LICENSES $FLATPAK_DEST/share/licenses/$FLATPAK_ID/ktmpv/
     sources:
       - type: dir
         path: .

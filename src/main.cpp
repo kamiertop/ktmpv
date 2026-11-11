@@ -20,6 +20,7 @@
 #include <KDSingleApplication>
 
 #include "application.h"
+#include "config-haruna.h"
 #include "generalsettings.h"
 #include "thumbnailimageprovider.h"
 
@@ -39,13 +40,13 @@ int main(int argc, char *argv[])
 #endif
     qSetMessagePattern(u"%{function}() : %{message}\n"_s);
 
-    QApplication::setOrganizationName(u"KDE"_s);
-    QApplication::setApplicationName(u"Haruna"_s);
-    QApplication::setOrganizationDomain(u"kde.org"_s);
-    QApplication::setApplicationDisplayName(u"Haruna - Media Player"_s);
+    QApplication::setOrganizationName(u"ktmpv"_s);
+    QApplication::setApplicationName(u"ktmpv"_s);
+    QApplication::setOrganizationDomain(u"kamiertop.github.io"_s);
+    QApplication::setApplicationDisplayName(u"ktmpv"_s);
     QApplication::setApplicationVersion(Application::version());
     // Set the portal identity before the platform plugin starts using D-Bus.
-    QGuiApplication::setDesktopFileName(u"org.kde.haruna"_s);
+    QGuiApplication::setDesktopFileName(u"io.github.kamiertop.ktmpv"_s);
 
     // required by mpv
     QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGL);
@@ -55,11 +56,11 @@ int main(int argc, char *argv[])
 
     QApplication qApplication(argc, argv);
     // Use the freshly compiled catalogs when running directly from build/bin.
-    const auto localCatalogs = QDir(QCoreApplication::applicationDirPath()).absoluteFilePath(u"../locale"_s);
-    if (QDir(localCatalogs).exists()) {
-        KLocalizedString::addDomainLocaleDir("haruna", localCatalogs);
-    }
-    QApplication::setWindowIcon(QIcon::fromTheme(u"haruna"_s));
+    const QDir executableDir(QCoreApplication::applicationDirPath());
+    const auto localCatalogs = executableDir.absoluteFilePath(u"../locale"_s);
+    const auto installedCatalogs = executableDir.absoluteFilePath(QStringLiteral(KTMPV_LOCALE_DIR));
+    KLocalizedString::addDomainLocaleDir("haruna", QDir(localCatalogs).exists() ? localCatalogs : installedCatalogs);
+    QApplication::setWindowIcon(QIcon::fromTheme(u"ktmpv"_s));
 
     bool handledByQPT = INITIAL_STYLE != QQuickStyle::name();
     if (qEnvironmentVariableIsEmpty("QT_QUICK_CONTROLS_STYLE") && !handledByQPT) {

@@ -6,7 +6,7 @@
 
 cmake_minimum_required(VERSION 3.16...3.30)
 
-project(haruna VERSION 1.9.0 LANGUAGES CXX)
+project(ktmpv VERSION 0.1.1 LANGUAGES CXX)
 
 option(HARUNA_INSTALL_GIT_HOOKS "Install the formatting Git pre-commit hook" OFF)
 option(HARUNA_ENABLE_QML_DEBUGGING "Enable the QML debugger in Debug builds" OFF)
@@ -175,12 +175,22 @@ set_package_properties(Ytdlp PROPERTIES TYPE RUNTIME
 
 feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
 
+# Keep the upstream catalogs in a private directory so both players can be installed.
+file(RELATIVE_PATH KTMPV_LOCALE_DIR
+    "${KDE_INSTALL_FULL_BINDIR}" "${KDE_INSTALL_FULL_DATADIR}/ktmpv/locale"
+)
+
 configure_file(
    ${CMAKE_CURRENT_SOURCE_DIR}/config-haruna.h.cmake
    ${CMAKE_CURRENT_BINARY_DIR}/src/config-haruna.h
 )
 
-ki18n_install(po)
+function(ktmpv_install_translations)
+    set(KDE_INSTALL_LOCALEDIR "${KDE_INSTALL_DATADIR}/ktmpv/locale")
+    ki18n_install(po)
+endfunction()
+
+ktmpv_install_translations()
 
 add_subdirectory(data)
 add_subdirectory(src)
