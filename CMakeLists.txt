@@ -6,7 +6,7 @@
 
 cmake_minimum_required(VERSION 3.16...3.30)
 
-project(ktmpv VERSION 0.1.1 LANGUAGES CXX)
+project(ktmpv VERSION 0.1.2 LANGUAGES CXX)
 
 option(HARUNA_INSTALL_GIT_HOOKS "Install the formatting Git pre-commit hook" OFF)
 option(HARUNA_ENABLE_QML_DEBUGGING "Enable the QML debugger in Debug builds" OFF)

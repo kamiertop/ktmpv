@@ -22,7 +22,7 @@ ktmpv 是 [KDE Haruna](https://invent.kde.org/multimedia/haruna) 的分支，使
 在 Fedora 45 上，可以用下面的命令安装下载的包。
 
 ```bash
-sudo dnf install ./ktmpv-0.1.1-1.fc45.x86_64.rpm
+sudo dnf install ./ktmpv-0.1.2-1.fc45.x86_64.rpm
 ```
 
 DNF 会安装运行依赖。应用菜单中的名称是 **ktmpv**，也可以用 `ktmpv` 启动。更新时下载新版本的 RPM 并用同一条安装命令，卸载用 `sudo dnf remove ktmpv`。
@@ -68,12 +68,12 @@ desktop-file-install \
 - 在 GitHub 的 **Actions → Fedora RPM → Run workflow** 选择分支即可构建测试包。成功后从该次运行的 **Artifacts** 下载，解压后用 DNF 安装。
 - 正式发布前，确认 [RPM spec](packaging/ktmpv.spec) 的 `Version` 和 `%changelog` 对应本次发布。后续发布时递增 `Version`。提交并推送后，在该提交上创建与版本一致的标签。打包和启动检查通过后，工作流会发布 RPM 和 `SHA256SUMS` 到 Releases。
 
-当前版本为 `0.1.1`。在准备发布的提交上运行以下命令。
+当前版本为 `0.1.2`。在准备发布的提交上运行以下命令。
 
 ```bash
 git push origin master
-git tag -a ktmpv-v0.1.1 -m "Ktmpv 0.1.1"
-git push origin ktmpv-v0.1.1
+git tag -a ktmpv-v0.1.2 -m "Ktmpv 0.1.2"
+git push origin ktmpv-v0.1.2
 ```
 
 发布时同步更新 RPM spec、CMake 和 AppStream 元数据中的版本号。`ktmpv-v` 前缀用来区分分支发布与上游标签。

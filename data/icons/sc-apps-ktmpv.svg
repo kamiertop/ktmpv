@@ -1,18 +1,28 @@
-<svg width="256" height="256" version="1.1" viewBox="0 0 67.733332 67.733335" xmlns="http://www.w3.org/2000/svg">
-    <g transform="translate(0,-229.26665)">
-        <rect x="1.3229166" y="230.85416" width="64.822914" height="64.822906" ry="6.6145768" fill="#2f3134" stroke-width=".31620926"/>
-        <rect x="13.229167" y="241.43748" width="11.906249" height="43.656258" rx="0" ry="0" fill="#e6e6e6" stroke-width=".35179207"/>
-        <g fill="#333" stroke-width=".19843754">
-            <rect x="17.197916" y="248.05206" width="3.9687498" height="3.9687521"/>
-            <rect x="17.197916" y="261.28122" width="3.9687498" height="3.9687524"/>
-            <rect x="17.197916" y="274.51041" width="3.9687498" height="3.9687524"/>
-        </g>
-        <rect x="42.333332" y="241.43748" width="11.906249" height="43.656258" rx="0" ry="0" fill="#e6e6e6" stroke-width=".35179207"/>
-        <g fill="#333" stroke-width=".19843754">
-            <rect x="46.302082" y="248.05206" width="3.9687498" height="3.9687524"/>
-            <rect x="46.302082" y="261.28122" width="3.9687498" height="3.9687526"/>
-            <rect x="46.302082" y="274.51041" width="3.9687498" height="3.9687526"/>
-        </g>
-        <rect x="23.8125" y="258.63541" width="19.843748" height="9.2604103" ry="0" fill="#e6e6e6" stroke-width=".28420806"/>
-    </g>
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="512" height="512" viewBox="0 0 512 512"
+     role="img" aria-labelledby="title">
+  <title id="title">ktmpv</title>
+
+  <defs>
+    <linearGradient id="background" x1="80" y1="56" x2="432" y2="456"
+                    gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#E96EA8"/>
+      <stop offset="0.48" stop-color="#9880C5"/>
+      <stop offset="1" stop-color="#48B991"/>
+    </linearGradient>
+
+    <radialGradient id="glow" cx="256" cy="256" r="162"
+                    gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFF" stop-opacity="0.12"/>
+      <stop offset="0.55" stop-color="#FFF" stop-opacity="0.06"/>
+      <stop offset="1" stop-color="#FFF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <circle cx="256" cy="256" r="232" fill="url(#background)"/>
+  <circle cx="256" cy="256" r="162" fill="url(#glow)"/>
+
+  <path d="M212 180 L338 256 L212 332 Z"
+        fill="#FFF" stroke="#FFF" stroke-width="8"
+        stroke-linejoin="round"/>
 </svg>
