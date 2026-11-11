@@ -21,6 +21,8 @@ SettingsBasePage {
         id: content
 
         columns: 2
+        columnSpacing: 16
+        rowSpacing: 10
 
         Label {
             text: KI18n.i18nc("@label:textbox", "Preferred language")
@@ -64,7 +66,7 @@ SettingsBasePage {
         }
 
         RowLayout {
-            SpinBox {
+            SettingsControls.NumberField {
                 from: 0
                 to: 100
                 value: AudioSettings.preferredTrack
@@ -91,7 +93,7 @@ SettingsBasePage {
             Layout.alignment: Qt.AlignRight
         }
 
-        SpinBox {
+        SettingsControls.NumberField {
             id: volumeStep
             editable: true
             from: 0
@@ -105,7 +107,7 @@ SettingsBasePage {
 
         // Replay Gain
         // See: https://mpv.io/manual/stable/#options-replaygain
-        Kirigami.ListSectionHeader {
+        SettingsControls.SectionTitle {
             text: KI18n.i18nc("@title", "Replay gain")
             Layout.columnSpan: 2
             Layout.fillWidth: true
@@ -116,7 +118,7 @@ SettingsBasePage {
             Layout.alignment: Qt.AlignRight
         }
         RowLayout {
-            ComboBox {
+            SettingsControls.Select {
                 textRole: "text"
                 valueRole: "value"
                 model: ListModel {
@@ -162,7 +164,7 @@ SettingsBasePage {
         // Replay Gain Clip
         Item { Layout.preferredWidth: 1 }
         RowLayout {
-            CheckBox {
+            SettingsControls.Toggle {
                 text: KI18n.i18nc("@label:spinbox", "Prevent clipping")
                 checked: AudioSettings.replayGainPreventClip
                 onClicked: {
@@ -185,7 +187,7 @@ SettingsBasePage {
         }
         RowLayout {
             id: preamp
-            SpinBox {
+            SettingsControls.NumberField {
                 editable: true
                 from: -150
                 to: 150
@@ -194,7 +196,7 @@ SettingsBasePage {
                     preamp.setPreamp(value)
                 }
             }
-            Button {
+            SettingsControls.ActionButton {
                 id: resetPreampButton
 
                 flat: true
@@ -223,7 +225,7 @@ SettingsBasePage {
         }
         RowLayout {
             id: fallback
-            SpinBox {
+            SettingsControls.NumberField {
                 editable: true
                 from: -200
                 to: 60
@@ -232,7 +234,7 @@ SettingsBasePage {
                     fallback.setFallback(value)
                 }
             }
-            Button {
+            SettingsControls.ActionButton {
                 id: resetFallbackButton
 
                 flat: true

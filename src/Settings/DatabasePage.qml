@@ -20,6 +20,8 @@ SettingsBasePage {
         id: content
 
         columns: 2
+        columnSpacing: 16
+        rowSpacing: 10
 
         Label {
             text: KI18n.i18nc("@label", "Clear recent files")
@@ -28,7 +30,7 @@ SettingsBasePage {
         RowLayout {
             Layout.fillWidth: true
 
-            Button {
+            SettingsControls.ActionButton {
                 text: KI18n.i18nc("@action:button:", "Clear")
                 onClicked: Models.recentFilesModel.deleteEntries()
             }
@@ -44,7 +46,7 @@ SettingsBasePage {
         RowLayout {
             Layout.fillWidth: true
 
-            Button {
+            SettingsControls.ActionButton {
                 text: KI18n.i18nc("@action:button:", "Clear")
                 onClicked: Database.deleteAllMetadata()
             }
@@ -60,7 +62,7 @@ SettingsBasePage {
         RowLayout {
             Layout.fillWidth: true
 
-            Button {
+            SettingsControls.ActionButton {
                 text: KI18n.i18nc("@action:button:", "Clear")
                 onClicked: Database.deletePlaybackPositions()
             }

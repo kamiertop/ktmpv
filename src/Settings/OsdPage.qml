@@ -25,7 +25,7 @@ SettingsBasePage {
                 Layout.alignment: Qt.AlignRight
             }
 
-            SpinBox {
+            SettingsControls.NumberField {
                 id: osdFontSize
 
                 editable: true
@@ -39,7 +39,7 @@ SettingsBasePage {
             }
         }
 
-        Kirigami.ListSectionHeader {
+        SettingsControls.SectionTitle {
             text: KI18n.i18nc("@title", "Choose when to show osd")
             Layout.columnSpan: 2
             Layout.fillWidth: true

@@ -78,7 +78,7 @@ SettingsBasePage {
 
         Item { Layout.preferredHeight: Kirigami.Units.largeSpacing }
 
-        CheckBox {
+        SettingsControls.Toggle {
             text: KI18n.i18nc("@option:check", "Enable mpv logging")
             checked: InformationSettings.mpvLogging
             visible: false

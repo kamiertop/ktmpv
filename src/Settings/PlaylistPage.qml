@@ -21,13 +21,15 @@ SettingsBasePage {
         id: content
 
         columns: 2
+        columnSpacing: 16
+        rowSpacing: 10
 
         Label {
             text: KI18n.i18nc("@label:listbox", "Position")
             Layout.alignment: Qt.AlignRight
         }
 
-        ComboBox {
+        SettingsControls.Select {
             textRole: "text"
             valueRole: "value"
             model: ListModel {
@@ -60,7 +62,7 @@ SettingsBasePage {
             Layout.alignment: Qt.AlignRight
         }
 
-        ComboBox {
+        SettingsControls.Select {
             textRole: "text"
             valueRole: "value"
             model: ListModel {
@@ -94,7 +96,7 @@ SettingsBasePage {
         }
 
         RowLayout {
-            ComboBox {
+            SettingsControls.Select {
                 id: playbackBehaviorComboBox
                 textRole: "text"
                 valueRole: "value"
@@ -153,7 +155,7 @@ SettingsBasePage {
         }
 
         Item { Layout.preferredWidth: 1; Layout.preferredHeight: 1 }
-        CheckBox {
+        SettingsControls.Toggle {
             checked: PlaylistSettings.randomPlayback
             enabled: ["StopAfterLast", "RepeatPlaylist"].includes(PlaylistSettings.playbackBehavior)
             text: KI18n.i18nc("@item:listbox the playback behavior of the playlist", "Random playback")
@@ -164,7 +166,7 @@ SettingsBasePage {
         }
 
         Item { Layout.preferredWidth: 1; Layout.preferredHeight: 1 }
-        CheckBox {
+        SettingsControls.Toggle {
             checked: PlaylistSettings.showToolbar
             text: KI18n.i18nc("@option:check", "Show toolbar")
             onClicked: {
@@ -174,7 +176,7 @@ SettingsBasePage {
         }
 
         Item { Layout.preferredWidth: 1; Layout.preferredHeight: 1 }
-        CheckBox {
+        SettingsControls.Toggle {
             id: overlayVideoCheckBox
 
             checked: PlaylistSettings.overlayVideo
@@ -193,7 +195,7 @@ SettingsBasePage {
         }
 
         Item { Layout.preferredWidth: 1; Layout.preferredHeight: 1 }
-        CheckBox {
+        SettingsControls.Toggle {
             checked: PlaylistSettings.showMediaTitle
             text: KI18n.i18nc("@option:check", "Show media title instead of file name")
             onClicked: {
@@ -203,7 +205,7 @@ SettingsBasePage {
         }
 
         Item { Layout.preferredWidth: 1; Layout.preferredHeight: 1 }
-        CheckBox {
+        SettingsControls.Toggle {
             checked: PlaylistSettings.loadSiblings
             text: KI18n.i18nc("@option:check", "Auto load videos from same folder")
             onClicked: {
@@ -213,7 +215,7 @@ SettingsBasePage {
         }
 
         Item { Layout.preferredWidth: 1; Layout.preferredHeight: 1 }
-        CheckBox {
+        SettingsControls.Toggle {
             checked: PlaylistSettings.showRowNumber
             text: KI18n.i18nc("@option:check", "Show row number")
             onClicked: {
@@ -223,7 +225,7 @@ SettingsBasePage {
         }
 
         Item { Layout.preferredWidth: 1; Layout.preferredHeight: 1 }
-        CheckBox {
+        SettingsControls.Toggle {
             checked: PlaylistSettings.canToggleWithMouse
             text: KI18n.i18nc("@option:check", "Toggle with mouse")
             onClicked: {
@@ -233,7 +235,7 @@ SettingsBasePage {
         }
 
         Item { Layout.preferredWidth: 1; Layout.preferredHeight: 1 }
-        CheckBox {
+        SettingsControls.Toggle {
             text: KI18n.i18nc("@option:check", "Increase font size when fullscreen")
             checked: PlaylistSettings.bigFontFullscreen
             onClicked: {
@@ -243,7 +245,7 @@ SettingsBasePage {
         }
 
         Item { Layout.preferredWidth: 1; Layout.preferredHeight: 1 }
-        CheckBox {
+        SettingsControls.Toggle {
             id: rememberStateCheckBox
 
             checked: PlaylistSettings.rememberState
@@ -263,7 +265,7 @@ SettingsBasePage {
         }
 
         Item { Layout.preferredWidth: 1; Layout.preferredHeight: 1 }
-        CheckBox {
+        SettingsControls.Toggle {
             checked: PlaylistSettings.openWithSingleClick
             text: KI18n.i18nc("@option:check", "Open items with single click")
             onClicked: {

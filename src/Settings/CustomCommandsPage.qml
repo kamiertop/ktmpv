@@ -87,7 +87,7 @@ SettingsBasePage {
                         }
                     }
 
-                    CheckBox {
+                    SettingsControls.Toggle {
                         id: toggleCommandCheckBox
 
                         visible: delegate.type === "startup"
@@ -151,7 +151,7 @@ SettingsBasePage {
 
                     Item { Layout.preferredWidth: Kirigami.Units.smallSpacing }
 
-                    Button {
+                    SettingsControls.ActionButton {
                         icon.name: "edit-entry"
                         Layout.rightMargin: Kirigami.Units.largeSpacing
                         onClicked: {

@@ -90,6 +90,8 @@ SettingsBasePage {
         id: content
 
         columns: 2
+        columnSpacing: 16
+        rowSpacing: 10
 
         SubtitlesFolders {
             id: subtitleFolders
@@ -100,7 +102,7 @@ SettingsBasePage {
 
         Item { Layout.preferredWidth: 1; Layout.preferredHeight: 1 }
 
-        CheckBox {
+        SettingsControls.Toggle {
             id: autoSelectSubtitles
 
             text: KI18n.i18nc("@label:check", "Auto select track")
@@ -163,7 +165,7 @@ SettingsBasePage {
         }
 
         RowLayout {
-            SpinBox {
+            SettingsControls.NumberField {
                 from: 0
                 to: 100
                 value: SubtitlesSettings.preferredTrack
@@ -186,7 +188,7 @@ SettingsBasePage {
         }
 
         Item { Layout.preferredWidth: 1; Layout.preferredHeight: 1 }
-        CheckBox {
+        SettingsControls.Toggle {
             id: allowOnBlackBordersCheckBox
 
             checked: SubtitlesSettings.allowOnBlackBorders
@@ -204,7 +206,7 @@ SettingsBasePage {
             }
         }
 
-        Kirigami.ListSectionHeader {
+        SettingsControls.SectionTitle {
             text: KI18n.i18nc("@title", "Styling")
             Layout.columnSpan: 2
             Layout.fillWidth: true
@@ -218,7 +220,7 @@ SettingsBasePage {
         RowLayout {
             Layout.fillWidth: true
 
-            Button {
+            SettingsControls.ActionButton {
                 id: subtitleFont
 
                 text: SubtitlesSettings.fontFamily
@@ -234,7 +236,7 @@ SettingsBasePage {
                 }
             }
 
-            Button {
+            SettingsControls.ActionButton {
                 id: resetSubtitleFontButton
 
                 icon.name: "edit-reset"
@@ -257,7 +259,7 @@ SettingsBasePage {
             Layout.alignment: Qt.AlignRight
         }
 
-        SpinBox {
+        SettingsControls.NumberField {
             from: 0
             to: 1000
             value: SubtitlesSettings.fontSize
@@ -272,7 +274,7 @@ SettingsBasePage {
             Layout.alignment: Qt.AlignRight
         }
 
-        CheckBox {
+        SettingsControls.Toggle {
             text: KI18n.i18nc("@option:check", "Bold")
             checked: SubtitlesSettings.isBold
             onClicked: {
@@ -283,7 +285,7 @@ SettingsBasePage {
 
         Item { Layout.preferredWidth: 1 }
 
-        CheckBox {
+        SettingsControls.Toggle {
             text: KI18n.i18nc("@option:check", "Italic")
             checked: SubtitlesSettings.isItalic
             onClicked: {
@@ -338,7 +340,7 @@ SettingsBasePage {
                 }
             }
 
-            Button {
+            SettingsControls.ActionButton {
                 id: resetSubtitleColorButton
 
                 icon.name: "edit-reset"
@@ -398,7 +400,7 @@ SettingsBasePage {
                 }
             }
 
-            Button {
+            SettingsControls.ActionButton {
                 id: resetShadowColorButton
 
                 icon.name: "edit-reset"
@@ -418,7 +420,7 @@ SettingsBasePage {
             Layout.alignment: Qt.AlignRight
         }
 
-        SpinBox {
+        SettingsControls.NumberField {
             id: shadowOffsetSpinBox
 
             from: 0
@@ -483,7 +485,7 @@ SettingsBasePage {
                 }
             }
 
-            Button {
+            SettingsControls.ActionButton {
                 id: resetBorderColorButton
 
                 icon.name: "edit-reset"
@@ -503,7 +505,7 @@ SettingsBasePage {
             Layout.alignment: Qt.AlignRight
         }
 
-        SpinBox {
+        SettingsControls.NumberField {
             id: borderSizeSpinBox
 
             from: 0
@@ -528,7 +530,7 @@ SettingsBasePage {
             Layout.alignment: Qt.AlignRight
         }
 
-        ComboBox {
+        SettingsControls.Select {
             textRole: "text"
             valueRole: "value"
             model: ListModel {

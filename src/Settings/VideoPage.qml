@@ -25,6 +25,8 @@ SettingsBasePage {
         id: content
 
         columns: 2
+        columnSpacing: 16
+        rowSpacing: 10
 
         Label {
             text: KI18n.i18nc("@label:listbox", "Default cover")
@@ -62,7 +64,7 @@ SettingsBasePage {
                 }
             }
 
-            Button {
+            SettingsControls.ActionButton {
                 icon.name: "folder"
                 onClicked: fileDialog.open()
             }
@@ -84,7 +86,7 @@ SettingsBasePage {
             }
         }
 
-        Kirigami.ListSectionHeader {
+        SettingsControls.SectionTitle {
             text: KI18n.i18nc("@title", "Screenshots")
             Layout.columnSpan: 2
             Layout.fillWidth: true
@@ -98,7 +100,7 @@ SettingsBasePage {
             Layout.alignment: Qt.AlignRight
         }
 
-        ComboBox {
+        SettingsControls.Select {
             id: screenshotFormat
             textRole: "key"
             model: ListModel {
@@ -196,7 +198,7 @@ SettingsBasePage {
             }
         }
 
-        Kirigami.ListSectionHeader {
+        SettingsControls.SectionTitle {
             text: KI18n.i18nc("@title", "Image adjustments")
             Layout.columnSpan: 2
             Layout.fillWidth: true

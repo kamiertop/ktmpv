@@ -22,6 +22,8 @@ SettingsBasePage {
         id: content
 
         columns: 2
+        columnSpacing: 16
+        rowSpacing: 10
 
         Label {
             text: KI18n.i18nc("@label:spinbox", "Maximum recent files")
@@ -29,7 +31,7 @@ SettingsBasePage {
         }
 
         RowLayout {
-            SpinBox {
+            SettingsControls.NumberField {
                 id: maxRecentFiles
 
                 from: 0
@@ -54,7 +56,7 @@ SettingsBasePage {
         Item { Layout.preferredWidth: 1 }
 
         RowLayout {
-            CheckBox {
+            SettingsControls.Toggle {
                 text: KI18n.i18nc("@option:check", "Allow only one instance")
                 checked: GeneralSettings.useSingleInstance
                 onClicked: {
@@ -74,7 +76,7 @@ SettingsBasePage {
         Item { Layout.preferredWidth: 1 }
 
         RowLayout {
-            CheckBox {
+            SettingsControls.Toggle {
                 text: KI18n.i18nc("@option:check", "Add file to playlist")
                 checked: GeneralSettings.appendVideoToSingleInstance
                 enabled: GeneralSettings.useSingleInstance
@@ -93,7 +95,7 @@ SettingsBasePage {
 
         Item { Layout.preferredWidth: 1 }
 
-        CheckBox {
+        SettingsControls.Toggle {
             text: KI18n.i18nc("@option:check", "Play new file")
             checked: GeneralSettings.playNewFileInSingleInstance
             enabled: GeneralSettings.useSingleInstance && GeneralSettings.appendVideoToSingleInstance
@@ -104,7 +106,7 @@ SettingsBasePage {
         }
 
 
-        Kirigami.ListSectionHeader {
+        SettingsControls.SectionTitle {
             text: KI18n.i18nc("@title", "Interface")
             Layout.columnSpan: 2
             Layout.fillWidth: true
@@ -115,7 +117,7 @@ SettingsBasePage {
             Layout.alignment: Qt.AlignRight
         }
 
-        CheckBox {
+        SettingsControls.Toggle {
             text: KI18n.i18nc("@option:check", "Show preview thumbnail")
             checked: GeneralSettings.showPreviewThumbnail
             onClicked: {
@@ -131,7 +133,7 @@ SettingsBasePage {
         Item { Layout.preferredWidth: 1 }
 
         RowLayout {
-            CheckBox {
+            SettingsControls.Toggle {
                 text: KI18n.i18nc("@option:check", "Use accurate preview")
                 checked: GeneralSettings.accuratePreviewThumbnail
                 enabled: GeneralSettings.showPreviewThumbnail
@@ -154,7 +156,7 @@ SettingsBasePage {
             Layout.alignment: Qt.AlignRight
         }
 
-        SpinBox {
+        SettingsControls.NumberField {
             id: previewThumbnailWidth
 
             from: 100
@@ -173,7 +175,7 @@ SettingsBasePage {
         }
 
         RowLayout {
-            CheckBox {
+            SettingsControls.Toggle {
                 text: KI18n.i18nc("@option:check", "Resize to fit video")
                 checked: GeneralSettings.resizeWindowToVideo
                 enabled: !SystemUtils.isPlatformWayland()
@@ -195,7 +197,7 @@ SettingsBasePage {
 
         Item { Layout.preferredWidth: 1 }
         RowLayout {
-            CheckBox {
+            SettingsControls.Toggle {
                 text: KI18n.i18nc("@option:check", "Start in fullscreen mode")
                 checked: GeneralSettings.fullscreenOnStartUp
                 onClicked: {
@@ -215,7 +217,7 @@ SettingsBasePage {
         Item { Layout.preferredWidth: 1 }
 
         RowLayout {
-            CheckBox {
+            SettingsControls.Toggle {
                 text: KI18n.i18nc("@option:check", "Remember window size and position")
                 checked: GeneralSettings.rememberWindowGeometry
                 enabled: !GeneralSettings.resizeWindowToVideo
@@ -242,7 +244,7 @@ SettingsBasePage {
 
         Item { Layout.preferredWidth: 1 }
 
-        CheckBox {
+        SettingsControls.Toggle {
             text: KI18n.i18nc("@option:check", "Show menubar")
             checked: GeneralSettings.showMenuBar
             onClicked: {
@@ -253,7 +255,7 @@ SettingsBasePage {
 
         Item { Layout.preferredWidth: 1 }
 
-        CheckBox {
+        SettingsControls.Toggle {
             text: KI18n.i18nc("@option:check", "Show toolbar")
             checked: GeneralSettings.showHeader
             onClicked: {
@@ -265,7 +267,7 @@ SettingsBasePage {
         Item { Layout.preferredWidth: 1 }
 
         RowLayout {
-            CheckBox {
+            SettingsControls.Toggle {
                 text: KI18n.i18nc("@option:check", "Show explanatory tooltips")
                 checked: GeneralSettings.showExplanatoryToolTips
                 onClicked: {
@@ -284,7 +286,7 @@ SettingsBasePage {
 
         Item { Layout.preferredWidth: 1 }
 
-        CheckBox {
+        SettingsControls.Toggle {
             text: KI18n.i18nc("@option:check", "Show chapter markers")
             checked: GeneralSettings.showChapterMarkers
             onClicked: {
@@ -295,7 +297,7 @@ SettingsBasePage {
 
         Item { Layout.preferredWidth: 1 }
 
-        CheckBox {
+        SettingsControls.Toggle {
             text: KI18n.i18nc("@option:check", "Show progress on taskbar icon")
             checked: GeneralSettings.showTaskbarProgress
             onClicked: {
@@ -309,19 +311,19 @@ SettingsBasePage {
             Layout.alignment: Qt.AlignRight
         }
 
-        ComboBox {
+        SettingsControls.Select {
             id: colorThemeSwitcher
 
             textRole: "display"
             model: HarunaApp.colorSchemesModel
-            delegate: ItemDelegate {
+            delegate: SettingsControls.SelectOption {
                 id: delegate
 
+                required property int index
                 required property var model
 
-                Kirigami.Theme.colorSet: Kirigami.Theme.View
-                width: parent.width
-                highlighted: delegate.model.display === GeneralSettings.colorScheme
+                selected: colorThemeSwitcher.currentIndex === index
+                highlighted: colorThemeSwitcher.highlightedIndex === index
                 contentItem: RowLayout {
                     Kirigami.Icon {
                         source: delegate.model.decoration
@@ -330,7 +332,7 @@ SettingsBasePage {
                     }
                     Label {
                         text: delegate.model.display
-                        color: delegate.highlighted ? Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
+                        color: Kirigami.Theme.textColor
                         Layout.fillWidth: true
                     }
                 }
@@ -354,7 +356,7 @@ SettingsBasePage {
             Layout.alignment: Qt.AlignRight
         }
 
-        ComboBox {
+        SettingsControls.Select {
             id: guiStyleComboBox
 
             textRole: "text"

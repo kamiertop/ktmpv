@@ -1,0 +1,104 @@
+# SPDX-License-Identifier: CC0-1.0
+name: Fedora RPM
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "ktmpv-v*"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build Fedora ${{ matrix.fedora }} RPM
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        fedora: [44, 45]
+    container:
+      image: fedora:${{ matrix.fedora }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Install packaging tools
+        run: dnf -y install git gzip tar rpm-build dnf5-plugins
+
+      - uses: actions/checkout@v4
+
+      - name: Install build dependencies
+        run: dnf -y builddep packaging/ktmpv.spec
+
+      - name: Build RPM
+        run: |
+          set -euo pipefail
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          version=$(rpmspec -q --srpm --qf '%{version}' packaging/ktmpv.spec)
+          if [[ "$GITHUB_REF_TYPE" == tag && "$GITHUB_REF_NAME" != "ktmpv-v$version" ]]; then
+            echo "::error::Expected tag ktmpv-v$version to match packaging/ktmpv.spec"
+            exit 1
+          fi
+
+          rpm_dir="$GITHUB_WORKSPACE/build/rpm"
+          mkdir -p "$rpm_dir/SOURCES"
+          git archive --format=tar.gz --prefix="ktmpv-$version/" \
+            --output="$rpm_dir/SOURCES/ktmpv-$version.tar.gz" HEAD
+          rpmbuild -bb --define "_topdir $rpm_dir" --define "_smp_build_ncpus 4" packaging/ktmpv.spec
+
+      - name: Test RPM installation and startup
+        run: |
+          set -euo pipefail
+          rpm_packages=(build/rpm/RPMS/x86_64/ktmpv-[0-9]*.rpm)
+          dnf -y install "${rpm_packages[@]}"
+          test -f /usr/share/applications/org.kde.haruna.desktop
+
+          test_dir=$(mktemp -d)
+          trap 'rm -rf "$test_dir"' EXIT
+          mkdir -m 700 "$test_dir/runtime"
+          result=0
+          env QT_QPA_PLATFORM=offscreen QT_QUICK_BACKEND=software \
+            XDG_RUNTIME_DIR="$test_dir/runtime" XDG_CONFIG_HOME="$test_dir/config" \
+            XDG_DATA_HOME="$test_dir/data" XDG_CACHE_HOME="$test_dir/cache" \
+            timeout 5s /usr/bin/haruna > "$test_dir/startup.log" 2>&1 || result=$?
+          cat "$test_dir/startup.log"
+          # A running GUI exits with timeout's status in the headless runner.
+          test "$result" -eq 124
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ktmpv-fedora-${{ matrix.fedora }}-x86_64
+          path: build/rpm/RPMS/x86_64/ktmpv-[0-9]*.rpm
+          if-no-files-found: error
+
+  release:
+    name: Publish RPMs to GitHub Releases
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/ktmpv-v')
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: ktmpv-fedora-*
+          path: release
+          merge-multiple: true
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          cd release
+          rpm_packages=(ktmpv-*.rpm)
+          sha256sum "${rpm_packages[@]}" > SHA256SUMS
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" "${rpm_packages[@]}" SHA256SUMS
+          else
+            gh release create "$GITHUB_REF_NAME" "${rpm_packages[@]}" SHA256SUMS \
+              --verify-tag --generate-notes --title "Ktmpv ${GITHUB_REF_NAME#ktmpv-v}"
+          fi

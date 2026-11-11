@@ -17,10 +17,14 @@ import org.kde.haruna.settings
 SettingsBasePage {
     id: root
 
+    readonly property int playbackFieldWidth: 140
+
     GridLayout {
         id: content
 
         columns: 2
+        columnSpacing: 16
+        rowSpacing: 10
 
         // Seek Small Step
         Label {
@@ -30,8 +34,9 @@ SettingsBasePage {
 
         RowLayout {
 
-            SpinBox {
+            SettingsControls.NumberField {
                 id: seekSmallStep
+                Layout.preferredWidth: root.playbackFieldWidth
                 editable: true
                 from: 0
                 to: 100
@@ -57,8 +62,9 @@ SettingsBasePage {
 
         RowLayout {
 
-            SpinBox {
+            SettingsControls.NumberField {
                 id: seekMediumStep
+                Layout.preferredWidth: root.playbackFieldWidth
                 editable: true
                 from: 0
                 to: 100
@@ -84,8 +90,9 @@ SettingsBasePage {
         }
 
         RowLayout {
-            SpinBox {
+            SettingsControls.NumberField {
                 id: seekBigStep
+                Layout.preferredWidth: root.playbackFieldWidth
                 editable: true
                 from: 0
                 to: 100
@@ -109,8 +116,9 @@ SettingsBasePage {
         }
 
         RowLayout {
-            ComboBox {
+            SettingsControls.Select {
                 id: hwDecodingComboBox
+                Layout.preferredWidth: root.playbackFieldWidth
 
                 textRole: "key"
                 model: ListModel {
@@ -167,7 +175,7 @@ SettingsBasePage {
 
         Item { Layout.preferredWidth: 1 }
 
-        CheckBox {
+        SettingsControls.Toggle {
             id: loadLastPlayedFileCheckBox
 
             text: KI18n.i18nc("@option:check", "Open last played file on startup")
@@ -188,7 +196,7 @@ SettingsBasePage {
 
         Item { Layout.preferredWidth: 1 }
 
-        CheckBox {
+        SettingsControls.Toggle {
             id: pauseOnMinimizeCheckBox
 
             text: KI18n.i18nc("@option:check", "Pause on minimize")
@@ -211,7 +219,7 @@ SettingsBasePage {
         // Playback position
         // ------------------------------------
 
-        Kirigami.ListSectionHeader {
+        SettingsControls.SectionTitle {
             text: KI18n.i18nc("@title", "Playback position")
             Layout.columnSpan: 2
             Layout.fillWidth: true
@@ -219,7 +227,7 @@ SettingsBasePage {
 
         Item { Layout.preferredWidth: 1 }
 
-        CheckBox {
+        SettingsControls.Toggle {
             id: saveFilePositionCheckBox
 
             text: KI18n.i18nc("@option:check", "Restore playback position")
@@ -245,7 +253,7 @@ SettingsBasePage {
 
         Item { Layout.preferredWidth: 1 }
 
-        CheckBox {
+        SettingsControls.Toggle {
             id: playOnResumeCheckBox
 
             text: KI18n.i18nc("@option:check", "Start playing")
@@ -272,7 +280,7 @@ SettingsBasePage {
 
         RowLayout {
             enabled: saveFilePositionCheckBox.checked
-            SpinBox {
+            SettingsControls.NumberField {
                 id: timePositionSaving
                 from: 0
                 to: 9999
@@ -303,7 +311,7 @@ SettingsBasePage {
 
         RowLayout {
             enabled: saveFilePositionCheckBox.checked
-            SpinBox {
+            SettingsControls.NumberField {
                 id: timePositionSaveInterval
                 from: 1
                 to: 9999
@@ -329,7 +337,7 @@ SettingsBasePage {
         // Chapters
         // ------------------------------------
 
-        Kirigami.ListSectionHeader {
+        SettingsControls.SectionTitle {
             text: KI18n.i18nc("@title", "Chapters")
             Layout.columnSpan: 2
             Layout.fillWidth: true
@@ -337,7 +345,7 @@ SettingsBasePage {
 
         Item { Layout.preferredWidth: 1 }
 
-        CheckBox {
+        SettingsControls.Toggle {
             id: skipChaptersCheckBox
             text: KI18n.i18nc("@option:check", "Skip chapters")
             checked: PlaybackSettings.skipChapters
@@ -391,7 +399,7 @@ SettingsBasePage {
         // Youtube-dl format settings
         // ------------------------------------
 
-        Kirigami.ListSectionHeader {
+        SettingsControls.SectionTitle {
             text: KI18n.i18nc("@title", "Youtube-dl")
             Layout.columnSpan: 2
             Layout.fillWidth: true
@@ -402,7 +410,7 @@ SettingsBasePage {
             Layout.alignment: Qt.AlignRight
         }
 
-        ComboBox {
+        SettingsControls.Select {
             id: ytdlFormatComboBox
 
             textRole: "text"

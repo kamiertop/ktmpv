@@ -29,9 +29,16 @@ ToolBar {
     rightPadding: 10
     topPadding: 4
     bottomPadding: 4
-    Kirigami.Theme.colorSet: Kirigami.Theme.Header
+    Kirigami.Theme.colorSet: Kirigami.Theme.Window
     background: Rectangle {
         color: Kirigami.Theme.backgroundColor
+        Rectangle {
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
+            height: 1
+            color: Qt.alpha(Kirigami.Theme.textColor, 0.08)
+        }
     }
 
     position: ToolBar.Header
@@ -78,11 +85,11 @@ ToolBar {
         Accessible.name: text
 
         background: Rectangle {
-            radius: width / 2
-            color: Kirigami.Theme.textColor
-            opacity: control.down ? 0.22 : control.hovered || control.checked || control.visualFocus ? 0.15 : 0
-            Behavior on opacity { NumberAnimation { duration: 120 } }
-            border.width: control.visualFocus ? 2 : 0
+            radius: 7
+            color: Qt.alpha(Kirigami.Theme.textColor,
+                            control.down ? 0.20 : control.hovered ? 0.13 : control.checked ? 0.15 : 0)
+            Behavior on color { ColorAnimation { duration: 120 } }
+            border.width: control.visualFocus ? 1 : 0
             border.color: Kirigami.Theme.highlightColor
         }
         contentItem: Item {
@@ -165,10 +172,35 @@ ToolBar {
         }
 
         HamburgerMenu {
+            id: headerMenu
             m_mpv: root.m_mpv
             m_menuBarLoader: menuBarLoader
             position: HamburgerMenu.Position.Header
             visible: !menuBarLoader.visible || menuBarLoader.isShowAnimationRunning
+            implicitWidth: 32
+            implicitHeight: 32
+            hoverEnabled: true
+            contentItem: Item {
+                Column {
+                    anchors.centerIn: parent
+                    spacing: 3
+                    Repeater {
+                        model: 3
+                        Rectangle {
+                            width: 14
+                            height: 1.5
+                            radius: 1
+                            color: Kirigami.Theme.textColor
+                        }
+                    }
+                }
+            }
+            background: Rectangle {
+                radius: 7
+                color: Qt.alpha(Kirigami.Theme.textColor,
+                                headerMenu.down || headerMenu.isOpen ? 0.20 : headerMenu.hovered ? 0.13 : 0)
+                Behavior on color { ColorAnimation { duration: 120 } }
+            }
         }
 
         MenuBarLoader {
@@ -178,6 +210,7 @@ ToolBar {
             Layout.maximumWidth: Math.max(0, root.width - 188)
             m_mpv: root.m_mpv
             state: !root.mainWindow.isFullScreen() && GeneralSettings.showMenuBar
+                   && (showGlobalMenu || root.width >= implicitWidth + 188)
                    ? "visible" : "hidden"
         }
 

@@ -41,6 +41,8 @@ SettingsBasePage {
 
     GridLayout {
         columns: 2
+        columnSpacing: 16
+        rowSpacing: 10
 
         Label {
             text: KI18n.i18nc("@label:textbox", "Command")

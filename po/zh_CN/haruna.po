@@ -3478,3 +3478,38 @@ msgstr "音频文件 (%1)"
 msgctxt "@item:inlistbox"
 msgid "All files (%1)"
 msgstr "所有文件 (%1)"
+
+#: src/Settings/AboutSettingsPage.qml
+msgctxt "@title"
+msgid "License"
+msgstr "许可证"
+
+#: src/Settings/AboutSettingsPage.qml
+msgctxt "@title"
+msgid "Contributors"
+msgstr "贡献者"
+
+#: src/Settings/AboutSettingsPage.qml
+msgctxt "@action:button"
+msgid "Website"
+msgstr "网站"
+
+#: src/Settings/AboutSettingsPage.qml
+msgctxt "@action:button"
+msgid "Report a bug"
+msgstr "报告问题"
+
+#: src/Settings/AboutSettingsPage.qml
+msgctxt "@action:button"
+msgid "Get Involved"
+msgstr "参与贡献"
+
+#: src/Settings/AboutSettingsPage.qml
+msgctxt "@action:button"
+msgid "Donate"
+msgstr "捐助"
+
+#: src/Settings/AboutSettingsPage.qml
+msgctxt "@title"
+msgid "Libraries in use"
+msgstr "使用的库"

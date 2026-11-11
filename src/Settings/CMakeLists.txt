@@ -12,6 +12,8 @@ qt_add_qml_module(settings
     VERSION 1.0
     QML_FILES
         SettingsBasePage.qml
+        SettingsControls.qml
+        AboutSettingsPage.qml
         DatabasePage.qml
         GeneralPage.qml
         PlaybackPage.qml

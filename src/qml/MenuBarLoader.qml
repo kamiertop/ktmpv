@@ -7,7 +7,7 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
-import QtQuick.Controls as QQC2
+import QtQuick.Controls.Basic as Basic
 import Qt.labs.platform as Platform
 
 import org.kde.kirigami as Kirigami
@@ -33,9 +33,32 @@ Loader {
     Component {
         id: menuBarComponent
 
-        QQC2.MenuBar {
+        Basic.MenuBar {
             hoverEnabled: true
-            Kirigami.Theme.colorSet: Kirigami.Theme.Header
+            padding: 0
+            spacing: 2
+            background: Item {}
+
+            delegate: Basic.MenuBarItem {
+                id: menuItem
+
+                implicitHeight: 32
+                leftPadding: 9
+                rightPadding: 9
+                hoverEnabled: true
+
+                palette.buttonText: Kirigami.Theme.textColor
+
+                background: Rectangle {
+                    radius: 7
+                    color: Qt.alpha(Kirigami.Theme.textColor,
+                                    menuItem.down || menuItem.menu?.opened ? 0.20
+                                    : menuItem.hovered || menuItem.highlighted ? 0.13 : 0)
+                    border.width: menuItem.visualFocus ? 1 : 0
+                    border.color: Kirigami.Theme.highlightColor
+                    Behavior on color { ColorAnimation { duration: 120 } }
+                }
+            }
 
             FileMenu {}
             ViewMenu {}

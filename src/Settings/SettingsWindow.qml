@@ -9,6 +9,8 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Window
 import QtQuick.Controls
+import QtQuick.Controls.Basic as Basic
+import QtQuick.Layouts
 
 import org.kde.ki18n
 import org.kde.kirigami as Kirigami
@@ -73,7 +75,8 @@ Loader {
         readonly property list<string> pageFiles: [
             "GeneralPage.qml", "OsdPage.qml", "PlaybackPage.qml", "VideoPage.qml",
             "AudioPage.qml", "SubtitlesPage.qml", "PlaylistPage.qml", "MousePage.qml",
-            "ShortcutsPage.qml", "CustomCommandsPage.qml", "DatabasePage.qml", "DebugPage.qml"
+            "ShortcutsPage.qml", "CustomCommandsPage.qml", "DatabasePage.qml", "DebugPage.qml",
+            "AboutSettingsPage.qml"
         ]
 
         function showPage(page: int): void {
@@ -81,22 +84,25 @@ Loader {
                     || (page === loadedPage && pageStack.depth > 1)) {
                 return
             }
-            const component = page === SettingsWindow.Page.About
-                              ? aboutPage : Qt.createComponent(`${settingsPath}/${pageFiles[page]}`)
+            const component = Qt.createComponent(`${settingsPath}/${pageFiles[page]}`)
             if (component.status !== Component.Ready) {
-                console.warn(component.errorString())
+                console.warn("Could not load settings page", pageFiles[page], component.errorString())
+                component.destroy()
                 return
             }
-            const properties = page === SettingsWindow.Page.Video ? {m_mpv: root.m_mpv} : {}
+            const properties = {title: settingsPagesList.pages[page].text}
+            if (page === SettingsWindow.Page.Video) {
+                properties.m_mpv = root.m_mpv
+            }
             // PageRow's URL factory parents new items to an internal QtObject.
             // Create with a visual parent first, then pass the item to PageRow.
             const item = component.createObject(pageStack, properties)
-            if (page !== SettingsWindow.Page.About) {
-                component.destroy()
-            }
             if (!item) {
+                console.warn("Could not create settings page", pageFiles[page], component.errorString())
+                component.destroy()
                 return
             }
+            component.destroy()
             const previousPage = pageStack.get(1)
             if (previousPage) {
                 pageStack.currentIndex = 1
@@ -109,148 +115,156 @@ Loader {
         }
 
 
-        width: 800
-        height: 600
+        width: 880
+        height: 640
         minimumWidth: 750
         minimumHeight: 400
         title: KI18n.i18nc("@title:window", "Settings")
         transientParent: null
         pageStack.initialPage: Kirigami.ScrollablePage {
+            id: navigationPage
             globalToolBarStyle: Kirigami.ApplicationHeaderStyle.None
             bottomPadding: 0
             leftPadding: 0
             rightPadding: 0
             topPadding: 0
-            Kirigami.Theme.colorSet: Kirigami.Theme.View
+            Kirigami.Theme.colorSet: Kirigami.Theme.Window
+            background: Rectangle {
+                color: Kirigami.Theme.backgroundColor
+                Rectangle {
+                    anchors.fill: parent
+                    color: Qt.alpha(Kirigami.Theme.textColor, 0.045)
+                }
+            }
 
-            ListView {
+            ColumnLayout {
                 id: settingsPagesList
-
-                currentIndex: root.activePage
 
                 property list<Kirigami.Action> pages: [
                     Kirigami.Action {
                         text: KI18n.i18nc("@action", "General")
-                        icon.name: "configure"
                         onTriggered: {
                             root.activePage = SettingsWindow.Page.General
                         }
                     },
                     Kirigami.Action {
                         text: KI18n.i18nc("@action", "Osd")
-                        icon.name: "dialog-messages"
                         onTriggered: {
                             root.activePage = SettingsWindow.Page.Osd
                         }
                     },
                     Kirigami.Action {
                         text: KI18n.i18nc("@action", "Playback")
-                        icon.name: "media-playback-start"
                         onTriggered: {
                             root.activePage = SettingsWindow.Page.Playback
                         }
                     },
                     Kirigami.Action {
                         text: KI18n.i18nc("@action", "Video")
-                        icon.name: "video-x-generic"
                         onTriggered: {
                             root.activePage = SettingsWindow.Page.Video
                         }
                     },
                     Kirigami.Action {
                         text: KI18n.i18nc("@action", "Audio")
-                        icon.name: "player-volume"
                         onTriggered: {
                             root.activePage = SettingsWindow.Page.Audio
                         }
                     },
                     Kirigami.Action {
                         text: KI18n.i18nc("@action", "Subtitles")
-                        icon.name: "add-subtitle"
                         onTriggered: {
                             root.activePage = SettingsWindow.Page.Subtitles
                         }
                     },
                     Kirigami.Action {
                         text: KI18n.i18nc("@action", "Playlist")
-                        icon.name: "view-media-playlist"
                         onTriggered: {
                             root.activePage = SettingsWindow.Page.Playlist
                         }
                     },
                     Kirigami.Action {
                         text: KI18n.i18nc("@action", "Mouse")
-                        icon.name: "input-mouse"
                         onTriggered: {
                             root.activePage = SettingsWindow.Page.Mouse
                         }
                     },
                     Kirigami.Action {
                         text: KI18n.i18nc("@action", "Shortcuts")
-                        icon.name: "configure-shortcuts"
                         onTriggered: {
                             root.activePage = SettingsWindow.Page.Shortcuts
                         }
                     },
                     Kirigami.Action {
                         text: KI18n.i18nc("@action", "Custom Commands")
-                        icon.name: "configure"
                         onTriggered: {
                             root.activePage = SettingsWindow.Page.CustomCommands
                         }
                     },
                     Kirigami.Action {
                         text: KI18n.i18nc("@action", "Database")
-                        icon.name: "server-database"
                         onTriggered: {
                             root.activePage = SettingsWindow.Page.Database
                         }
                     },
                     Kirigami.Action {
                         text: KI18n.i18nc("@action", "Debug")
-                        icon.name: "help-about"
                         onTriggered: {
                             root.activePage = SettingsWindow.Page.Debug
                         }
                     },
                     Kirigami.Action {
                         text: KI18n.i18nc("@action", "About")
-                        icon.name: "help-about"
                         onTriggered: {
                             root.activePage = SettingsWindow.Page.About
                         }
                     }
                 ]
 
-                anchors.fill: parent
-                model: pages
-                delegate: ItemDelegate {
-                    id: delegate
+                width: navigationPage.availableWidth
+                spacing: 3
 
-                    required property int index
-                    required property Action modelData
+                Item { Layout.preferredHeight: 9 }
 
-                    width: settingsPagesList.width
-                    action: delegate.modelData
-                    highlighted: delegate.index === ListView.view.currentIndex
-                }
+                Repeater {
+                    id: navigationEntries
+                    model: settingsPagesList.pages
+                    delegate: Basic.ItemDelegate {
+                        id: delegate
 
-                onCurrentIndexChanged: {
-                    if (settingsWindow.loadedPage !== SettingsWindow.Page.None
-                            && currentIndex >= 0 && currentIndex < pages.length
-                            && currentIndex !== root.activePage) {
-                        root.activePage = currentIndex
+                        required property int index
+                        required property Action modelData
+
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 37
+                        leftPadding: 22
+                        rightPadding: 22
+                        hoverEnabled: true
+                        action: delegate.modelData
+                        Keys.onUpPressed: navigationEntries.itemAt(Math.max(0, index - 1))?.forceActiveFocus()
+                        Keys.onDownPressed: navigationEntries.itemAt(Math.min(navigationEntries.count - 1, index + 1))?.forceActiveFocus()
+                        highlighted: delegate.index === root.activePage
+                        palette.text: Kirigami.Theme.textColor
+                        palette.buttonText: Kirigami.Theme.textColor
+                        palette.highlightedText: Kirigami.Theme.textColor
+                        font.weight: highlighted ? Font.DemiBold : Font.Normal
+                        background: Item {
+                            Rectangle {
+                                anchors.fill: parent
+                                anchors.leftMargin: 10
+                                anchors.rightMargin: 10
+                                radius: 8
+                                color: Qt.alpha(Kirigami.Theme.textColor, delegate.down ? 0.20
+                                                : delegate.highlighted ? 0.15 : delegate.hovered ? 0.10 : 0)
+                                border.width: delegate.visualFocus ? 1 : 0
+                                border.color: Kirigami.Theme.highlightColor
+                                Behavior on color { ColorAnimation { duration: 120 } }
+                            }
+                        }
                     }
                 }
 
-            }
-
-            Component {
-                id: aboutPage
-
-                Kirigami.AboutPage {
-                    aboutData: HarunaApp.aboutData()
-                }
+                Item { Layout.preferredHeight: 9 }
             }
         }
 
@@ -258,8 +272,7 @@ Loader {
 
         Component.onCompleted: {
             HarunaApp.setupEventFilter(settingsWindow)
-            pageStack.columnView.columnWidth = Kirigami.Units.gridUnit * 15
-            showPage(root.activePage)
+            pageStack.columnView.columnWidth = 208
         }
 
         Shortcut {

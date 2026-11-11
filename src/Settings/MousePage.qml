@@ -183,7 +183,7 @@ SettingsBasePage {
                     text: KI18n.i18nc("@label:listbox", "Mouse button")
                 }
 
-                ComboBox {
+                SettingsControls.Select {
                     id: mouseButtonComboBox
 
                     textRole: "text"
@@ -245,7 +245,7 @@ SettingsBasePage {
                     text: KI18n.i18nc("@label:listbox", "Modifier key")
                 }
 
-                ComboBox {
+                SettingsControls.Select {
                     id: modifierComboBox
 
                     textRole: "text"
@@ -292,7 +292,7 @@ SettingsBasePage {
                     Layout.bottomMargin: Kirigami.Units.largeSpacing
                 }
 
-                CheckBox {
+                SettingsControls.Toggle {
                     id: isDoubleClickCheckBox
 
                     text: KI18n.i18nc("@label:check whether mouse button action should trigger on double click",
@@ -313,7 +313,7 @@ SettingsBasePage {
                 RowLayout {
                     Layout.fillWidth: true
 
-                    Button {
+                    SettingsControls.ActionButton {
                         text: KI18n.i18nc("@action:button select mouse button action", "Select action")
                         visible: !selectedActionLabel.text
                         onClicked: {
@@ -329,7 +329,7 @@ SettingsBasePage {
                         Layout.fillWidth: true
                     }
 
-                    Button {
+                    SettingsControls.ActionButton {
                         text: KI18n.i18nc("@action:button", "Change action")
                         visible: selectedActionLabel.text
                         onClicked: {

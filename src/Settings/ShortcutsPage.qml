@@ -26,22 +26,30 @@ SettingsBasePage {
         }
     }
 
-    header: ToolBar {
-        width: parent.width
+    header: ColumnLayout {
+        width: root.width
+        spacing: 8
 
-        RowLayout {
-            anchors.fill: parent
+        Label {
+            text: root.title
+            font.pixelSize: 23
+            font.weight: Font.DemiBold
+            Layout.leftMargin: root.leftPadding
+            Layout.topMargin: 20
+        }
 
-            Kirigami.SearchField {
-                id: searchField
+        Kirigami.SearchField {
+            id: searchField
 
-                focus: true
-                onAccepted: Models.proxyActionsModel.setNameFilter(text)
-                Layout.fillWidth: true
-                KeyNavigation.up: actionsListView
-                KeyNavigation.down: actionsListView
-                Component.onCompleted: forceActiveFocus()
-            }
+            focus: true
+            onAccepted: Models.proxyActionsModel.setNameFilter(text)
+            Layout.fillWidth: true
+            Layout.leftMargin: root.leftPadding
+            Layout.rightMargin: root.rightPadding
+            Layout.bottomMargin: 8
+            KeyNavigation.up: actionsListView
+            KeyNavigation.down: actionsListView
+            Component.onCompleted: forceActiveFocus()
         }
     }
     ListView {
