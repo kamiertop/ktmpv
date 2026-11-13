@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: haruna\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-11-08 02:56+0000\n"
+"POT-Creation-Date: 2026-11-11 01:00+0000\n"
 "PO-Revision-Date: 2026-11-04 22:06+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
@@ -997,22 +997,22 @@ msgctxt "@placeholder"
 msgid "playlist name"
 msgstr "Oynatma listesi adı"
 
-#: src/Playlist/Playlist.qml:561 src/Playlist/PlaylistItemContextMenu.qml:117
+#: src/Playlist/Playlist.qml:561 src/Playlist/PlaylistItemContextMenu.qml:114
 msgctxt "@action:inmenu"
 msgid "Select All"
 msgstr "Tümünü Seç"
 
-#: src/Playlist/Playlist.qml:566 src/Playlist/PlaylistItemContextMenu.qml:122
+#: src/Playlist/Playlist.qml:566 src/Playlist/PlaylistItemContextMenu.qml:119
 msgctxt "@action:inmenu"
 msgid "Deselect All"
 msgstr "Tümünün Seçimini Kaldır"
 
-#: src/Playlist/Playlist.qml:571 src/Playlist/PlaylistItemContextMenu.qml:127
+#: src/Playlist/Playlist.qml:571 src/Playlist/PlaylistItemContextMenu.qml:124
 msgctxt "@action:inmenu"
 msgid "Invert Selection"
 msgstr "Seçimi Ters Çevir"
 
-#: src/Playlist/Playlist.qml:578 src/Playlist/PlaylistItemContextMenu.qml:155
+#: src/Playlist/Playlist.qml:578 src/Playlist/PlaylistItemContextMenu.qml:152
 msgctxt "@action:inmenu"
 msgid "Scroll to Playing Item"
 msgstr "Oynatılan Ögeye Sar"
@@ -1174,7 +1174,7 @@ msgctxt "@action:inmenu"
 msgid "Update metadata"
 msgstr "Üst Veriyi Güncelle"
 
-#: src/Playlist/PlaylistItemContextMenu.qml:103
+#: src/Playlist/PlaylistItemContextMenu.qml:100
 msgctxt "@info:tooltip"
 msgid ""
 "Update metadata in the database with metadata inside the file.\n"
@@ -1183,28 +1183,28 @@ msgstr ""
 "Veri tabanındaki üst veriyi, dosyanın içindeki üst veriyle güncelleyin.\n"
 "Üst veri, tez erişim için veri tabanında saklanır."
 
-#: src/Playlist/PlaylistItemContextMenu.qml:134
+#: src/Playlist/PlaylistItemContextMenu.qml:131
 msgctxt "@action:inmenu"
 msgid "Remove from Playlist"
 msgstr "Oynatma Listesinden Kaldır"
 
-#: src/Playlist/PlaylistItemContextMenu.qml:141
+#: src/Playlist/PlaylistItemContextMenu.qml:138
 msgctxt "@action:inmenu"
 msgid "Remove Selected from Playlist"
 msgstr "Seçiliyi Oynatma Listesinden Kaldır"
 
-#: src/Playlist/PlaylistItemContextMenu.qml:148
+#: src/Playlist/PlaylistItemContextMenu.qml:145
 #: src/Playlist/PlaylistTabDelegate.qml:306
 msgctxt "@action:inmenu"
 msgid "Rename"
 msgstr "Yeniden Adlandır"
 
-#: src/Playlist/PlaylistItemContextMenu.qml:167
+#: src/Playlist/PlaylistItemContextMenu.qml:164
 msgctxt "@action:inmenu"
 msgid "Move File to Trash"
 msgstr "Dosyayı Çöp Kutusuna Taşı"
 
-#: src/Playlist/PlaylistItemContextMenu.qml:174
+#: src/Playlist/PlaylistItemContextMenu.qml:171
 msgctxt "@action:inmenu"
 msgid "Move Selected Files to Trash"
 msgstr "Seçili Dosyaları Çöp Kutusuna Taşı"
@@ -2285,7 +2285,7 @@ msgstr "Arayüz"
 #: src/Settings/GeneralPage.qml:114
 msgctxt "@label:spinbox"
 msgid "Footer style"
-msgstr "Alt bilgi biçemi"
+msgstr "Alt bilgi stili"
 
 #: src/Settings/GeneralPage.qml:126
 msgctxt "@item:listbox the footer style"
@@ -2460,7 +2460,7 @@ msgstr "Renk şeması"
 #: src/Settings/GeneralPage.qml:429
 msgctxt "@label:listbox"
 msgid "GUI style"
-msgstr "Grafik arabirim biçemi"
+msgstr "Grafik arabirim stili"
 
 #: src/Settings/GeneralPage.qml:462
 msgctxt "@item:listbox default GUI style"
@@ -2870,7 +2870,7 @@ msgstr "Sağ"
 #: src/Settings/PlaylistPage.qml:59
 msgctxt "@label:listbox"
 msgid "Playlist style"
-msgstr "Oynatma listesi biçemi"
+msgstr "Oynatma listesi stili"
 
 #: src/Settings/PlaylistPage.qml:71
 msgctxt "@item:listbox the style of the playlist"
@@ -3083,7 +3083,7 @@ msgstr ""
 #: src/Settings/SubtitlesPage.qml:208
 msgctxt "@title"
 msgid "Styling"
-msgstr "Biçemleme"
+msgstr "Stilleme"
 
 #: src/Settings/SubtitlesPage.qml:214
 msgctxt "@label:listbox"
@@ -3103,7 +3103,7 @@ msgstr "Yazıtipi puntosu"
 #: src/Settings/SubtitlesPage.qml:271
 msgctxt "@label"
 msgid "Font style"
-msgstr "Yazıtipi biçemi"
+msgstr "Yazıtipi stili"
 
 #: src/Settings/SubtitlesPage.qml:276
 msgctxt "@option:check"
@@ -3148,7 +3148,7 @@ msgstr "Kenarlık genişliği"
 #: src/Settings/SubtitlesPage.qml:527
 msgctxt "@label:listbox"
 msgid "Border style"
-msgstr "Kenar biçemi"
+msgstr "Kenar stili"
 
 #: src/Settings/SubtitlesPage.qml:539
 msgctxt "@item:listbox border style"
@@ -3314,7 +3314,7 @@ msgstr "Etkin alt yazıyı takip et"
 #: src/Transcript/Transcript.qml:216
 msgctxt "@info:tooltip"
 msgid "ASS subtitle styles"
-msgstr "ASS alt yazı biçemleri"
+msgstr "ASS alt yazı stilleri"
 
 #: src/Utilities/commandlineoptions.cpp:33
 #, kde-format
