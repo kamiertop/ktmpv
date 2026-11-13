@@ -823,9 +823,10 @@ void PlaylistModel::updateMetadata()
             if (m_isShuttingDown || m_playlistVersion != expectedPlaylistVersion) {
                 return;
             }
-            Database::instance()->updateMetadata(item.url);
-            const auto metadata = Database::instance()->getMetadata(item.url);
-            Q_EMIT metaDataReady(i, item.url, metadata.properties);
+            if (Database::instance()->updateMetadata(item.url)) {
+                const auto metadata = Database::instance()->getMetadata(item.url);
+                Q_EMIT metaDataReady(i, item.url, metadata.properties);
+            }
             ++i;
         }
         Q_EMIT metadataUpdateFinished();
