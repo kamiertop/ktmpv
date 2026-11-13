@@ -38,7 +38,7 @@ public:
     Q_INVOKABLE void deletePlaybackPositions();
     void deletePlaybackPosition(const QString &md5Hash);
 
-    int insertMetadata(const QUrl &url, const KFileMetaData::PropertyMultiMap &properties);
+    int insertMetadata(const QUrl &url, const KFileMetaData::PropertyMultiMap &properties, bool replaceExisting = false);
     Q_INVOKABLE bool updateMetadata(const QUrl &url);
     Q_INVOKABLE Metadata getMetadata(const QUrl &url);
     Q_INVOKABLE bool deleteMetadata(const QUrl &url);

@@ -311,10 +311,13 @@ void Database::deletePlaybackPosition(const QString &md5Hash)
     }
 }
 
-int Database::insertMetadata(const QUrl &url, const KFileMetaData::PropertyMultiMap &properties)
+int Database::insertMetadata(const QUrl &url, const KFileMetaData::PropertyMultiMap &properties, bool replaceExisting)
 {
     auto db = connection();
-    db.transaction();
+    if (!db.transaction()) {
+        qCDebug(HarunaDatabase) << db.lastError();
+        return 0;
+    }
 
     QSqlQuery query(db);
     query.prepare(u"INSERT INTO "_s % URLS_TABLE % u" (url) VALUES (:url) "
@@ -347,6 +350,17 @@ int Database::insertMetadata(const QUrl &url, const KFileMetaData::PropertyMulti
     int urlId = query.value(0).toInt();
     query.finish();
 
+    if (replaceExisting) {
+        query.prepare(u"DELETE FROM " % METADATA_CACHE_TABLE % u" WHERE url_id = :url_id");
+        query.bindValue(u":url_id"_s, urlId);
+        if (!query.exec()) {
+            db.rollback();
+            qCDebug(HarunaDatabase) << query.lastError() << getLastExecutedQuery(query);
+            return 0;
+        }
+        query.finish();
+    }
+
     query.prepare(insertMetadataCacheSql);
     query.bindValue(u":url_id"_s, urlId);
     query.bindValue(u":title"_s, properties.value(KFileMetaData::Property::Title));
@@ -376,9 +390,15 @@ int Database::insertMetadata(const QUrl &url, const KFileMetaData::PropertyMulti
         return 0;
     }
 
-    db.commit();
+    const auto metadataId = query.lastInsertId().toInt();
+    query.finish();
+    if (!db.commit()) {
+        qCDebug(HarunaDatabase) << db.lastError();
+        db.rollback();
+        return 0;
+    }
 
-    return query.lastInsertId().toInt();
+    return metadataId;
 }
 
 bool Database::updateMetadata(const QUrl &url)
@@ -387,15 +407,11 @@ bool Database::updateMetadata(const QUrl &url)
         return false;
     }
 
-    if (!deleteMetadata(url)) {
-        return false;
-    }
-
     const auto metadata = MiscUtils::metadata(url);
     if (!metadata.has_value()) {
         return false;
     }
-    const auto lastInsertId = insertMetadata(url, metadata.value().properties);
+    const auto lastInsertId = insertMetadata(url, metadata.value().properties, true);
 
     return lastInsertId > 0;
 }
@@ -415,7 +431,6 @@ Metadata Database::getMetadata(const QUrl &url)
     }
 
     if (!query.first()) {
-        qCInfo(HarunaDatabase) << "Metadata not found for" << url;
         return {};
     }
 

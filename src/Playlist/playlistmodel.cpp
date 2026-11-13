@@ -838,10 +838,18 @@ void PlaylistModel::updateMetadataForRow(int row)
     const auto modelIndex = index(row, 0);
     const auto url = data(modelIndex, PlaylistModel::Roles::PathRole).toUrl();
 
-    if (Database::instance()->updateMetadata(url)) {
-        const auto metadata = Database::instance()->getMetadata(url);
-        Q_EMIT metaDataReady(row, url, metadata.properties);
-    }
+    const auto expectedPlaylistVersion = m_playlistVersion.load();
+    m_threadPool.start([this, row, url, expectedPlaylistVersion]() {
+        if (m_isShuttingDown || m_playlistVersion != expectedPlaylistVersion) {
+            return;
+        }
+        if (Database::instance()->updateMetadata(url)) {
+            const auto metadata = Database::instance()->getMetadata(url);
+            if (!m_isShuttingDown && m_playlistVersion == expectedPlaylistVersion && !metadata.properties.isEmpty()) {
+                Q_EMIT metaDataReady(row, url, metadata.properties);
+            }
+        }
+    });
 }
 
 QString PlaylistModel::padNumberWithZeros(int number, int length) const

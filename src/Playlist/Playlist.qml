@@ -11,6 +11,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Controls.Basic as Basic
 import QtQuick.Layouts
+import QtQuick.Shapes
 import Qt5Compat.GraphicalEffects
 import QtQuick.Dialogs
 
@@ -68,19 +69,57 @@ ResizeablePage {
         playlistsManager: root.manager
     }
 
+    component SidebarIcon: Item {
+        id: glyph
+
+        required property string path
+        property color color: Kirigami.Theme.textColor
+        implicitWidth: 17
+        implicitHeight: 17
+
+        Shape {
+            anchors.centerIn: parent
+            width: 24
+            height: 24
+            scale: Math.min(glyph.width, glyph.height) / width
+            preferredRendererType: Shape.CurveRenderer
+
+            ShapePath {
+                fillColor: "transparent"
+                strokeColor: glyph.color
+                strokeWidth: 1.8
+                capStyle: ShapePath.RoundCap
+                joinStyle: ShapePath.RoundJoin
+                PathSvg { path: glyph.path }
+            }
+        }
+    }
+
     component SidebarButton: Basic.ToolButton {
         id: control
         implicitWidth: 30
         implicitHeight: 30
-        icon.width: 16
-        icon.height: 16
-        icon.color: Kirigami.Theme.textColor
-        display: AbstractButton.IconOnly
+        required property string glyphPath
+        padding: 0
+        contentItem: Item {
+            SidebarIcon {
+                anchors.centerIn: parent
+                width: implicitWidth
+                height: implicitHeight
+                path: control.glyphPath
+                opacity: control.enabled ? 1 : 0.4
+            }
+        }
         hoverEnabled: true
         Accessible.name: text
-        ToolTip.visible: hovered && text.length > 0
-        ToolTip.text: text
-        ToolTip.delay: 600
+        ToolTip {
+            parent: control
+            x: (control.width - width) / 2
+            y: control.height + 4
+            visible: control.hovered && !control.down && control.text.length > 0
+            text: control.text
+            delay: 200
+        }
         background: Rectangle {
             radius: 6
             color: Qt.alpha(Kirigami.Theme.textColor, control.down ? 0.14 : control.hovered ? 0.08 : 0)
@@ -433,14 +472,14 @@ ResizeablePage {
                 spacing: 3
                 SidebarButton {
                     action: addFilesAction
-                    icon.name: "list-add"
+                    glyphPath: "M12 5v14 M5 12h14"
                 }
-                SidebarButton { action: addFolderAction; icon.name: "folder-open" }
-                SidebarButton { action: addUrlAction; icon.name: "link" }
-                SidebarButton { action: importPlaylistAction; icon.name: "view-media-playlist" }
+                SidebarButton { action: addFolderAction; glyphPath: "M3 17V6a2 2 0 0 1 2 -2h4l2 2h7a2 2 0 0 1 2 2v2 M3 17l2.5 -6H22l-2.5 7a2 2 0 0 1 -2 2H5a2 2 0 0 1 -2 -3Z" }
+                SidebarButton { action: addUrlAction; glyphPath: "M10 13l4 -4 M8 15l-1 1a3.5 3.5 0 0 1 -5 -5l4 -4a3.5 3.5 0 0 1 5 0 M16 9l1 -1a3.5 3.5 0 0 1 5 5l-4 4a3.5 3.5 0 0 1 -5 0" }
+                SidebarButton { action: importPlaylistAction; glyphPath: "M3 6h13 M3 11h9 M3 16h6 M15 12l6 4 -6 4Z" }
                 SidebarButton {
                     text: sortAction.text
-                    icon.name: "view-sort"
+                    glyphPath: "M4 6h9 M4 11h7 M4 16h5 M17 5v14 M14 16l3 3 3 -3"
                     onClicked: sortMenu.open()
                     PlaylistActionsMenu {
                         id: sortMenu
@@ -451,7 +490,7 @@ ResizeablePage {
                 }
                 SidebarButton {
                     text: playbackAction.text
-                    icon.name: "media-playlist-repeat"
+                    glyphPath: "M19 4l3 3 -3 3 M22 7H7a4 4 0 0 0 -4 4 M5 20l-3 -3 3 -3 M2 17h15a4 4 0 0 0 4 -4"
                     onClicked: playbackMenu.open()
                     PlaylistActionsMenu {
                         id: playbackMenu
@@ -463,7 +502,7 @@ ResizeablePage {
                 Item { Layout.fillWidth: true }
                 SidebarButton {
                     text: KI18n.i18nc("@action:button", "More actions")
-                    icon.name: "overflow-menu"
+                    glyphPath: "M5 12h0.2 M12 12h0.2 M19 12h0.2"
                     onClicked: sidebarMenu.open()
                     PlaylistActionsMenu {
                         id: sidebarMenu
@@ -507,12 +546,12 @@ ResizeablePage {
                         font.pointSize: 11
                         font.weight: Font.Medium
                     }
-                    indicator: Kirigami.Icon {
+                    indicator: SidebarIcon {
                         x: playlistSelector.width - width - 8
                         y: (playlistSelector.height - height) / 2
                         width: 12
                         height: 12
-                        source: "arrow-down"
+                        path: "M5 9l7 7 7 -7"
                         color: Kirigami.Theme.disabledTextColor
                     }
                     delegate: Basic.ItemDelegate {
@@ -542,7 +581,7 @@ ResizeablePage {
                     Layout.leftMargin: 4
                     Layout.rightMargin: 4
                 }
-                SidebarButton { action: newPlaylistAction; icon.name: "list-add" }
+                SidebarButton { action: newPlaylistAction; glyphPath: "M12 5v14 M5 12h14" }
             }
 
             Basic.TextField {
@@ -568,12 +607,12 @@ ResizeablePage {
                                : Qt.alpha(Kirigami.Theme.textColor, 0.10)
                     }
                 }
-                Kirigami.Icon {
+                SidebarIcon {
                     x: 7
                     anchors.verticalCenter: parent.verticalCenter
                     width: 14
                     height: 14
-                    source: "search"
+                    path: "M15 10a5 5 0 1 1 -10 0 5 5 0 0 1 10 0Z M14 14l5 5"
                     color: Kirigami.Theme.disabledTextColor
                 }
                 SidebarButton {
@@ -581,7 +620,7 @@ ResizeablePage {
                     anchors.verticalCenter: parent.verticalCenter
                     visible: searchField.text.length > 0
                     text: KI18n.i18nc("@action:button", "Clear")
-                    icon.name: "edit-clear"
+                    glyphPath: "M6 6l12 12 M18 6L6 18"
                     onClicked: {
                         searchDelay.stop()
                         root.manager.visiblePlaylist.searchText = ""
@@ -718,7 +757,11 @@ ResizeablePage {
                     Qt.callLater(positionViewAtIndex, currentIndex, ListView.Beginning)
                 }
 
-                ContextMenu.menu: Menu {
+                ContextMenu.menu: playlistView.count > 0 ? listContextMenu : null
+
+                Menu {
+                    id: listContextMenu
+
                     MenuItem {
                         text: KI18n.i18nc("@action:inmenu", "Select All")
                         onClicked: root.manager.visiblePlaylist.selectItem(0, PlaylistFilterProxyModel.All)
