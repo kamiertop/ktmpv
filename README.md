@@ -22,7 +22,7 @@ ktmpv 是 [KDE Haruna](https://invent.kde.org/multimedia/haruna) 的分支，使
 在 Fedora 45 上，可以用下面的命令安装下载的包。
 
 ```bash
-sudo dnf install ./ktmpv-0.1.3-1.fc45.x86_64.rpm
+sudo dnf install ./ktmpv-0.1.4-1.fc45.x86_64.rpm
 ```
 
 DNF 会安装运行依赖。应用菜单中的名称是 **ktmpv**，也可以用 `ktmpv` 启动。更新时下载新版本的 RPM 并用同一条安装命令，卸载用 `sudo dnf remove ktmpv`。

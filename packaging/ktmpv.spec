@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: CC0-1.0
 Name:           ktmpv
-Version:        0.1.3
+Version:        0.1.4
 Release:        1%{?dist}
 Summary:        Qt media player based on Haruna and libmpv
 License:        GPL-3.0-or-later AND GPL-2.0-or-later AND BSD-3-Clause AND CC-BY-4.0 AND CC0-1.0
@@ -80,6 +80,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/io.github.kamiertop.k
 %{_datadir}/icons/hicolor/*/apps/ktmpv.*
 
 %changelog
+* Wed Nov 18 2026 Ktmpv contributors - 0.1.4-1
+- Sync Haruna 1.9.1 fixes for playlists and playback.
+
 * Wed Nov 18 2026 Ktmpv contributors - 0.1.3-1
 - Improve playlist interactions and metadata refresh.
 
