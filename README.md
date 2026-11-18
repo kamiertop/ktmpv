@@ -22,7 +22,7 @@ ktmpv 是 [KDE Haruna](https://invent.kde.org/multimedia/haruna) 的分支，使
 在 Fedora 45 上，可以用下面的命令安装下载的包。
 
 ```bash
-sudo dnf install ./ktmpv-0.1.2-1.fc45.x86_64.rpm
+sudo dnf install ./ktmpv-0.1.3-1.fc45.x86_64.rpm
 ```
 
 DNF 会安装运行依赖。应用菜单中的名称是 **ktmpv**，也可以用 `ktmpv` 启动。更新时下载新版本的 RPM 并用同一条安装命令，卸载用 `sudo dnf remove ktmpv`。
@@ -66,17 +66,19 @@ desktop-file-install \
 [GitHub Actions 工作流](.github/workflows/release-rpm.yml) 在 Fedora 44 和 45 容器中构建 x86_64 RPM。每个包都会在对应容器中通过 DNF 安装并做离屏启动检查。完整的图形交互仍需在桌面环境中验证。
 
 - 在 GitHub 的 **Actions → Fedora RPM → Run workflow** 选择分支即可构建测试包。成功后从该次运行的 **Artifacts** 下载，解压后用 DNF 安装。
-- 正式发布前，确认 [RPM spec](packaging/ktmpv.spec) 的 `Version` 和 `%changelog` 对应本次发布。后续发布时递增 `Version`。提交并推送后，在该提交上创建与版本一致的标签。打包和启动检查通过后，工作流会发布 RPM 和 `SHA256SUMS` 到 Releases。
+- 正式发布前，同步更新 [RPM spec](packaging/ktmpv.spec) 的 `Version` 和最新 `%changelog` 条目、CMake 项目版本，以及 AppStream 最新发布条目的版本，然后提交。
+- 发布脚本读取当前提交中的版本号。校验通过后才创建本地注释标签。加 `--check` 可单独校验。
 
-当前版本为 `0.1.2`。在准备发布的提交上运行以下命令。
+以下以发布 `0.1.4` 为例。
 
 ```bash
+python3 scripts/release-tag.py --check 0.1.4
+python3 scripts/release-tag.py 0.1.4
 git push origin master
-git tag -a ktmpv-v0.1.2 -m "Ktmpv 0.1.2"
-git push origin ktmpv-v0.1.2
+git push origin refs/tags/ktmpv-v0.1.4
 ```
 
-发布时同步更新 RPM spec、CMake 和 AppStream 元数据中的版本号。`ktmpv-v` 前缀用来区分分支发布与上游标签。
+推送 `ktmpv-v` 标签会触发打包。打包和启动检查通过后，工作流会发布 RPM 和 `SHA256SUMS` 到 Releases。
 
 ## 同步 Haruna 上游
 
